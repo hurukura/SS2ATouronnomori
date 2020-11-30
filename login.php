@@ -1,18 +1,32 @@
 // ログイン画面
-<h1>新規会員登録</h1>
-<form action="register.php" method="post">//処理を行う宛先を指定
-<div>
-    <label>名前：<label>
-    <input type="text" name="name" required>
-</div>
-<div>
-    <label>メールアドレス：<label>
-    <input type="text" name="mail" required>
-</div>
-<div>
-    <label>パスワード：<label>
-    <input type="password" name="pass" required>
-</div>
-<input type="submit" value="新規登録">
-</form>
-<p>すでに登録済みの方は<a href="login.php">こちら</a></p>
+<?php
+
+session_start();
+
+$error_message = "";
+
+if(isset($_POST["login"])) {
+
+	if($_POST["user_name"] == "webtan" && $_POST["password"] == "webtan_pass") {
+		$_SESSION["user_name"] = $_POST["user_name"];
+		$login_success_url = "login_success.php";
+		header("Location: {$login_success_url}");
+		exit;
+	}
+$error_message = "※ID、もしくはパスワードが間違っています。<br>　もう一度入力して下さい。";
+}
+
+?>
+
+<head>
+<meta charset="UTF-8">
+    <h1>討論の杜</h1>
+</head>
+<body>
+<h2>ログイン</h2>
+<!--   ここにログイン機能-->
+
+
+
+<p>アカウントをお持ちでない方は<a href="acount_create.php">コチラ</a></p>
+</body>
