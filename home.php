@@ -1,3 +1,4 @@
+
 // ホーム画面
 
 <!DOCTYPE html>
@@ -10,6 +11,9 @@
 
 <body>
 
+  <h1>討論の杜</h1>
+    <h3>現在行われている討論</h3>
+  
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-firestore.js"></script>
 	<script>
@@ -101,4 +105,7 @@
 
 		</script>
 	</table>
+    <a href="">サインアウトする</a>
+    <a href="acount_setting">アカウントの設定</a>
+
 </body>
