@@ -39,60 +39,43 @@
 		<!--FireStoreからルーム情報を取得-->
 		<script>
 			var db = firebase.firestore();
+			var room = [];
 			var docRef = db.collection("chatroom");
 			docRef.get().then((query) => {
-					var room = [];
 					query.forEach((doc) => {
+
 						var data = doc.data();
-						room.push([doc.id /*,data.name, data.age*/ ]);
+						room.push(doc.id);
 					});
 					console.log(room);
-				})
-				.catch((error) => {
-					console.log(`データの取得に失敗しました (${error})`);
-				});
-		</script>
 
-		<script>
-			var room = new Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-				var str = "<tr><th>No.</th><th>お題</th><th>参加人数</th><th>参加/観戦</th></tr>";
+
+					//以下ルーム一覧表示
+					var str = "<tr><th>No.</th><th>お題</th><th>参加人数</th><th>参加/観戦</th></tr>";
 					// tr部分のループ
 					for (var i = 0; i < room.length; i++) {
-						// tr要素を生成
 						str += "<tr>";
 						// th・td部分のループ
 						for (var j = 0; j < 4; j++) {
 							switch (j) {
-								case 0:
-									// td要素を生成
-									str += "<td>"; 
-									// td要素内にテキストを追加
-									str += i;
-									// td要素をtr要素の子要素に追加
+								case 0:	//	No.
+									str += "<td>";
+									str += i + 1;
 									str += "</td>";
 									break;
-								case 1:
-									// td要素を生成
-									str += "<td>"; 
-									// td要素内にテキストを追加
+								case 1:	//	お題
+									str += "<td>";
 									str += room[i];
-									// td要素をtr要素の子要素に追加
 									str += "</td>";
 									break;
-								case 2:
-									// td要素を生成
-									str += "<td>"; 
-									// td要素内にテキストを追加
+								case 2:	//	参加人数
+									str += "<td>";
 									str += j;
-									// td要素をtr要素の子要素に追加
 									str += "</td>";
 									break;
-								case 3:
-									// td要素を生成
-									str += "<td>"; 
-									// td要素内にテキストを追加
+								case 3:	//	参加/観戦
+									str += "<td>";
 									str += "<input type='button' value='参加' /><input type='button' value='観戦' />";
-									// td要素をtr要素の子要素に追加
 									str += "</td>";
 									break;
 							}
@@ -103,6 +86,11 @@
 					// 生成したtable要素を追加する
 					document.getElementById('roomtable').innerHTML = str;
 
+
+				})
+				.catch((error) => {
+					console.log(`データの取得に失敗しました (${error})`);
+				});
 		</script>
 	</table>
     <a href="">サインアウトする</a>
