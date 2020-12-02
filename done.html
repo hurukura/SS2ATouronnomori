@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>討論の杜</title>
+</head>
+<body>
+  <h1>...Please wait</h1>
+  <div id="info"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
+  <script src="./config.js"></script>
+  <script>
+    firebase.auth().onAuthStateChanged( (user) => {
+      let h1   = document.querySelector('h1');
+      let info = document.querySelector('#info');
+
+      if(user) {
+        h1.innerText   = 'ようこそ！';
+        info.innerHTML = `${user.displayName}さんがログインしました`;
+        console.log(user);
+      }
+      else {
+        h1.innerText = 'Not Login';
+          window.location.href='login.php';
+      }
+    });
+  </script>
+    
+    <script type="text/javascript">
+        
+        
+<!--
+// 一定時間経過後に指定ページにジャンプする
+waitTimer = 3; // 何秒後に移動する
+url = "http://localhost/kaihatsu/home.php"; // 移動するアドレス
+function jumpPage() {
+  location.href = url;
+}
+setTimeout("jumpPage()",waitTimer*1000)
+//-->
+</script>
+    
+    
+</body>
+</html>
