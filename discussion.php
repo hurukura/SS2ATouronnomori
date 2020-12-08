@@ -9,12 +9,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 	<meta charset="utf-8">
 	<title>FireStore Chat</title>
 	<style>
-		#chatlog {
-			width: 100%;
-			height: 3000px;
-			border: 1px solid gray;
-		}
-
 		#uname {
 			width: 80px;
 			float: left;
@@ -23,25 +17,13 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			text-align: center;
 		}
 
-		#msg {
-			width: 330px;
-			height: 30px;
-			margin-right: 10px;
-			font-size: 12pt;
-		}
-
-		#sbmt {
-			width: 100px;
-			height: 30px;
-		}
-
 		#form1 {
 			width: 100%;
 			display: flex;
 			text-align: center;
 			position: fixed;
 			bottom: 0;
-			background-color: gray;
+			background-color: #ccc;
 		}
 
 		/* テキストエリア、送信ボタン④ */
@@ -49,13 +31,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 
 			display: flex;
 			width: 100%;
-			/*		background-color: #eee;*/
-			/*タイムラインの色と同じにする*/
-			/*
-		border-right: 1px solid #ddd;
-		border-left: 1px solid #ddd;
-		border-bottom: 1px solid #ddd;
-*/
 			height: 48px;
 			padding: 4px;
 		}
@@ -111,16 +86,10 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		}
 
 		#your_container {
-			/* 高さや幅など、好きな様に設定
-    bms_messages_containerの方で、縦横いっぱいに広がってくれるので、
-    ここで充てた高さと横幅がそのままスタイルになる仕組み */
-
 			height: 1000px;
-			/*ここはご自由に*/
-			width: 70%;
-			/*ここはご自由に*/
-			
+			width: 100%;
 		}
+
 
 		/* タイムライン部分③ */
 		#bms_messages {
@@ -135,16 +104,26 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			/*ヘッダーの下に影を入れる*/
 		}
 
+
 		/* メッセージ全般のスタイル */
 		.bms_message {
 			margin: 0px;
-			padding: 0 14px;
+			padding: 0px 15px;
 			/*吹き出しがタイムラインの側面にひっつかない様に隙間を開ける*/
 			font-size: 16px;
 			word-wrap: break-word;
 			/* 吹き出し内で自動で改行 */
 			white-space: normal;
 			/*指定widthに合わせて、文字を自動的に改行*/
+		}
+
+		.bms_message_text {
+			font-size: 24px;
+		}
+
+		.bms_message_name {
+			font-size: 16px;
+			padding: 0px 0px 5px;
 		}
 
 		.bms_message_box {
@@ -156,7 +135,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		}
 
 		.bms_message_content {
-			padding: 20px;
+			padding: 10px;
 			/*文字や画像（コンテンツ）の外側に隙間を入れる*/
 		}
 
@@ -168,11 +147,11 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		}
 
 		.bms_left .bms_message_box {
-			color: #333;
+			color: #fff;
 			/*テキストを黒にする*/
-			background: #eee;
-			border: 2px solid #13178E;
-			border-radius: 30px 30px 30px 0px;
+			background: #888;
+			border: 2px solid #888;
+			border-radius: 15px 15px 15px 0px;
 			/*左下だけ尖らせて吹き出し感を出す*/
 			margin-right: 50px;
 			/*左側の発言だとわかる様に、吹き出し右側に隙間を入れる*/
@@ -188,12 +167,19 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		.bms_right .bms_message_box {
 			color: #fff;
 			/*テキストを白にする*/
-			background: #13178E;
-			border: 2px solid #13178E;
-			border-radius: 30px 30px 0px 30px;
+			/*			background: #13178E;*/
+			background: #888;
+
+			border: 2px solid #888;
+			border-radius: 15px 15px 0px 15px;
 			/*右下だけ尖らせて吹き出し感を出す*/
 			margin-left: 50px;
 			/*右側の発言だとわかる様に、吹き出し左側に隙間を入れる*/
+		}
+		
+		.bms_mine .bms_message_box {
+			background: #13178E;
+			border: 2px solid #13178E;
 		}
 
 		/* 回り込みを解除 */
