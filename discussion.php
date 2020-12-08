@@ -340,12 +340,20 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			let log = document.getElementById(id);
 			if (log !== null) {
 				log.innerText = `${data.name}: ${data.msg} (${getStrTime(data.date)})`;
-				
-				if(data.flag == 0){
+
+				if(data.name == uname){	//	自分の投稿にはbms_mineクラスを追加
+				if (data.flag == 0) {	//	flag==0	賛成	flag==1	反対
+					var str = `<div class="bms_message bms_right bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name">${data.name}</div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+				} else {
+					var str = `<div class="bms_message bms_left bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name">${data.name}</div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+				}
+			}else{
+				if(data.flag == 0){		//	flag==0	賛成	flag==1	反対
 				var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text">${data.name}<br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 			}else{
 				var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text">${data.name}<br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 			}
+		}
 			}
 		}
 
