@@ -1,0 +1,197 @@
+<?php
+
+?>
+
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="c_home.css">
+	<title>討論の杜</title>
+</head>
+
+<body>
+
+	<!--    モジュール   -->
+
+	<!--    firebase auth   -->
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
+
+	<!--    firestoe    -->
+	<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
+
+	<!--    モジュールここまで   -->
+
+	<script>
+		var firebaseConfig = { // 共有アカウント
+			apiKey: "AIzaSyCKJKx0gUnD2qBB3cdyk_wZ8bJAwdeqFWw",
+			authDomain: "touronnomori.firebaseapp.com",
+			databaseURL: "https://touronnomori.firebaseio.com",
+			projectId: "touronnomori",
+			storageBucket: "touronnomori.appspot.com",
+			messagingSenderId: "638781936294",
+			appId: "1:638781936294:web:32215a2b2d87370fb5da67",
+			measurementId: "G-F5WWPJ82Q4"
+		};
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+
+	</script>
+
+
+	<div class="home">
+		<div id="info"></div>
+		<form>
+			<button type="button" id="logout" class="hide">ログアウト</button>
+		</form>
+		<h1>討論の杜</h1>
+		<h2>...Please wait</h2>
+
+		<h3 style="text-align: center">現在行われている討論</h3>
+		<!-- <div id="maintable"></div>-->
+		<table class="discussion_table" id="roomtable" border="1" frame="void" width="400" height="250">
+		</table>
+
+		<a id="setting_yudo" href="acount_setting.html" >アカウントの設定</a>
+
+
+	</div>
+	
+	
+<!--	ここからJavaScript		-->
+	<script>
+		firebase.auth().onAuthStateChanged((user) => {
+			let logout = document.getElementById("logout");
+
+			//-----------------------------------
+			// ログインチェック
+			//-----------------------------------
+			if (!user) {
+				showMessage('Not Login', 'ログインしていません');
+				logout.classList.add("hide");
+				window.location.href = 'login.php';
+				return (false);
+			}
+
+			//-----------------------------------
+			// ログイン者への処理
+			//-----------------------------------
+			// ログインメッセージ
+			showMessage('ようこそ！', `ログイン中 : ${user.displayName}さん`);
+			console.log(user);
+
+			// ログアウトボタンを表示
+			logout.classList.remove("hide");
+
+			// ログアウトボタンを押下
+			logout.addEventListener("click", () => {
+				firebase.auth().signOut().then(() => {
+						console.log("ログアウトしました");
+
+						//アラートを表示
+						window.alert('ログアウトしました。またきてね');
+						//OKでログイン画面へ遷移
+						window.location.href = 'login.php'
+					})
+					.catch((error) => {
+						console.log(`ログアウト時にエラーが発生しました (${error})`);
+					});
+			});
+		});
+		/**
+		 * メッセージ表示
+		 **/
+		function showMessage(title, msg) {
+			document.querySelector('h2').innerText = title;
+			document.querySelector('#info').innerText = msg;
+		}
+
+	</script>
+
+	<!--FireStoreからルーム情報を取得-->
+	<script>
+		//参加ボタンでトークに参加
+		function discussion(id) {
+			var a = 1;
+			ret = confirm("ルーム" + id + "に移動します");
+			if (ret == true) {
+				location.href = "http://localhost/discussion.php/?room" + id;
+			}
+		}
+		//観戦ボタンでトークを見る
+		function participation(id) {
+			var a = 1;
+			ret = confirm("ルーム" + id + "に移動します");
+			if (ret == true) {
+				location.href = "http://localhost/discussion.php/?room" + id + "par";
+			}
+		}
+
+
+		var db = firebase.firestore();
+		var room = [];
+		var docRef = db.collection("chatroom");
+		docRef.get().then((query) => {
+				query.forEach((doc) => {
+
+					var data = doc.data();
+					room.push(doc.id);
+				});
+				console.log(room);
+
+
+
+
+				//以下ルーム一覧表示
+
+
+				var str = "<tr><th>No.</th><th>お題</th><th>参加人数</th><th>参加/観戦</th></tr>";
+
+
+				// tr部分のループ
+				for (var i = 0; i < room.length; i++) {
+					str += "<tr>";
+					// th・td部分のループ
+					for (var j = 0; j < 4; j++) {
+						switch (j) {
+							case 0: // No.
+								str += "<td align='center'>";
+								str += i + 1;
+								str += "</td>";
+								break;
+							case 1: // お題
+								str += "<td align='center'>";
+								str += room[i];
+								str += "</td>";
+								break;
+							case 2: // 参加人数
+								str += "<td align='center'>";
+								str += j;
+								str += "</td>";
+								break;
+							case 3: // 参加/観戦
+								str += "<td align='center'>";
+								str += "<input type='button' ' name='chatroom' onclick='discussion(";
+								str += i + 1;
+								str += ")' value='参加' /><input type='button' 'name='kansenroom' onclick='participation(";
+								str += i + 1;
+								str += ")' value='観戦' />";
+								str += "</td>";
+								break;
+						}
+					}
+					// tr要素をtable要素の子要素に追加
+					str += "</tr>";
+				}
+				// 生成したtable要素を追加する
+				document.getElementById('roomtable').innerHTML = str;
+
+
+			})
+			.catch((error) => {
+				console.log(`データの取得に失敗しました (${error})`);
+			});
+
+	</script>
+
+
+</body>

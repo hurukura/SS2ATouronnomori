@@ -83,6 +83,10 @@
 
         // ログアウトボタンを表示
         logout.classList.remove("hide");
+		
+		 //firestore定義
+        const db = firebase.firestore();
+        const docRef = db.collection("users");
 
         // ---------------------------------
         // 設定するボタンを押下
@@ -106,9 +110,10 @@
 
             //アラートが「はい」のときの処理
             if (result) {
-                db.collection("users").doc(user.uid).set({
+                db.collection("users").doc(user.uid).update({
                         //　ここにDBへの書き込みコード
                     seibetu: a,
+                    nendai: b,
 
                     })
                     .then(function() {
@@ -130,7 +135,7 @@
                     //アラートを表示
                     window.alert('ログアウトしました。またきてね');
                     //OKでログイン画面へ遷移
-                    window.location.href = 'login.php'
+                    window.location.href = 'login.html'
                 })
                 .catch((error) => {
                     console.log(`ログアウト時にエラーが発生しました (${error})`);

@@ -1,0 +1,60 @@
+.discussion_table tr:hover td {
+    background-color: #d9efff;
+    border-spacing: 8px 0px;
+
+}
+
+body {
+    background-image: url(images/background.jfif);
+}
+
+
+h1,
+h2 {
+    text-align: center;
+    font-family: "Century";
+}
+
+h2 {
+    margin-top: -30;
+}
+
+
+h3 {
+    margin-top: 40;
+    font-size: 25;
+}
+
+
+
+#info{
+    text-align: right;
+}
+
+#logout {
+    float: right;
+}
+
+table {
+    margin: 5px auto;
+    /* 上下3px 左右auto */
+    padding: 15px;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 5px;
+}
+
+th {
+    color: #fff;
+    background: #008000;
+    border-radius: 5px;
+    padding: 5px;
+
+
+}
+
+td {
+    padding: 20px;
+    border-radius: 5px;
+    background: white;
+}
