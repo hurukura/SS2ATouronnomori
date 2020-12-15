@@ -60,7 +60,19 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
   var uname = getUName();
   document.getElementById("uname").innerHTML = uname;
 
+  var del = location.search.split('&&');
+		console.log(del);
 
+
+		// 要素を取得
+		if (del[2] == 'par') {
+			let id1 = document.getElementById('form1');
+			// 現在の display プロパティの値を保持
+			const displayOriginal = id1.style.display;
+			// none に設定して非表示
+			id1.style.display = 'none';
+    }
+    
   //---------------------------------------
   // Firestoreの準備
   //---------------------------------------
@@ -69,9 +81,8 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 
   // チャットルームのリファレンス取得
   //    ★home.phpで選択したルームIDを ここ↓  に入れる
-     var roomNo = location.search.substr(1,5);
-     console.log(roomNo);
-  var messagesRef = db.collection("chatroom").doc(roomNo).collection("messages");
+  console.log(del[1]);
+	var messagesRef = db.collection("chatroom").doc(del[1]).collection("messages");
      
   /**
    * 同期処理
