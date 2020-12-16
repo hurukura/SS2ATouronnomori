@@ -401,9 +401,9 @@
 			var str = data.theme;
 			console.log(typeof str);
 			var cnt = Object.entries(data.users);
-			console.log(cnt);
+			console.log(cnt.length);
 			document.querySelector(`#${room}`).innerText = str;
-			document.querySelector(`#${count}`).innerText = String(cnt);
+			document.querySelector(`#${count}`).innerText = String(cnt.length);
 		}
 
 	</script>
