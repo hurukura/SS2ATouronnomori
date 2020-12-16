@@ -36,6 +36,10 @@
 		firebase.initializeApp(firebaseConfig);
 
 	</script>
+	<script>
+		var userid = "";
+
+	</script>
 
 
 	<div class="home">
@@ -60,80 +64,100 @@
 				<td align='center'>
 					<div id='room1'></div>
 				</td>
-				<td align='center'>2</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(1)' value='参加' /><input type='button' name='kansenroom' onclick='participation(1)' value='観戦' /></td>
+				<td align='center'>
+					<div id='count1'></div>
+				</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(1,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(1)' value='観戦' /></td>
 			</tr>
 			<tr>
 				<td align='center'>2</td>
 				<td align='center'>
 					<div id='room2'></div>
 				</td>
-				<td align='center'>2</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(2)' value='参加' /><input type='button' name='kansenroom' onclick='participation(2)' value='観戦' /></td>
+				<td align='center'>
+					<div id='count2'></div>
+				</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(2,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(2)' value='観戦' /></td>
 			</tr>
 			<tr>
 				<td align='center'>3</td>
 				<td align='center'>
 					<div id='room3'></div>
 				</td>
-				<td align='center'>2</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(3)' value='参加' /><input type='button' name='kansenroom' onclick='participation(3)' value='観戦' /></td>
+				<td align='center'>
+					<div id='count3'></div>
+				</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(3,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(3)' value='観戦' /></td>
 			</tr>
 			<tr>
 				<td align='center'>4</td>
 				<td align='center'>
 					<div id='room4'></div>
 				</td>
-				<td align='center'>2</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(4)' value='参加' /><input type='button' name='kansenroom' onclick='participation(4)' value='観戦' /></td>
+				<td align='center'>
+					<div id='count4'></div>
+				</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(4,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(4)' value='観戦' /></td>
 			</tr>
 			<tr>
 				<td align='center'>5</td>
 				<td align='center'>
 					<div id='room5'></div>
 				</td>
-				<td align='center'>2</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(5)' value='参加' /><input type='button' name='kansenroom' onclick='participation(5)' value='観戦' /></td>
+				<td align='center'>
+					<div id='count5'></div>
+				</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(5,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(5)' value='観戦' /></td>
 			</tr>
 			<tr>
 				<td align='center'>6</td>
 				<td align='center'>
 					<div id='room6'></div>
 				</td>
-				<td align='center'>2</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(6)' value='参加' /><input type='button' name='kansenroom' onclick='participation(6)' value='観戦' /></td>
+				<td align='center'>
+					<div id='count6'></div>
+				</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(6,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(6)' value='観戦' /></td>
 			</tr>
 			<tr>
 				<td align='center'>7</td>
 				<td align='center'>
 					<div id='room7'></div>
 				</td>
-				<td align='center'>2</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(7)' value='参加' /><input type='button' name='kansenroom' onclick='participation(7)' value='観戦' /></td>
+				<td align='center'>
+					<div id='count7'></div>
+				</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(7,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(7)' value='観戦' /></td>
 			</tr>
 			<tr>
 				<td align='center'>8</td>
 				<td align='center'>
 					<div id='room8'></div>
 				</td>
-				<td align='center'>2</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(8)' value='参加' /><input type='button' name='kansenroom' onclick='participation(8)' value='観戦' /></td>
+				<td align='center'>
+					<div id='count8'></div>
+				</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(8,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(8)' value='観戦' /></td>
 			</tr>
 			<tr>
 				<td align='center'>9</td>
 				<td align='center'>
 					<div id='room9'></div>
 				</td>
-				<td align='center'>2</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(9)' value='参加' /><input type='button' name='kansenroom' onclick='participation(9)' value='観戦' /></td>
+				<td align='center'>
+					<div id='count9'></div>
+				</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(9,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(9)' value='観戦' /></td>
 			</tr>
 			<tr>
 				<td align='center'>10</td>
 				<td align='center'>
 					<div id='room10'></div>
 				</td>
-				<td align='center'>2</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(10)' value='参加' /><input type='button' name='kansenroom' onclick='participation(10)' value='観戦' /></td>
+				<td align='center'>
+					<div id='count10'></div>
+				</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(10,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(10)' value='観戦' /></td>
 			</tr>
 		</table>
 
@@ -164,6 +188,9 @@
 			// ログインメッセージ
 			showMessage('ようこそ！', `ログイン中 : ${user.displayName}さん`);
 			console.log(user);
+
+			userid = user.uid;
+			console.log(userid);
 
 			// ログアウトボタンを表示
 			logout.classList.remove("hide");
@@ -196,11 +223,25 @@
 	<!--FireStoreからルーム情報を取得-->
 	<script>
 		//参加ボタンでトークに参加
-		function discussion(id) {
+		function discussion(id, userid) {
 			var a = 1;
 			ret = confirm("ルーム" + id + "に移動します");
 			if (ret == true) {
-				location.href = "http://localhost/Touronnomori/kaihatsu/discussion.html?&&room" + id;
+
+				//ユーザーIDをFirestoreに追加
+				const db = firebase.firestore();
+				const docRef = db.collection("chatroom").doc("room" + id).collection("roominfo").doc("room" + id);
+				docRef.update({
+						users: firebase.firestore.FieldValue.arrayUnion(userid)
+					})
+					.then(function() {
+						console.log("Document successfully written!");
+					})
+					.catch(function(error) {
+						console.error("Error writing document: ", error);
+					});
+
+				//				location.href = "http://localhost/SS2ATouronnomori/discussion.html?&&room" + id;
 			}
 		}
 		//観戦ボタンでトークを見る
@@ -208,7 +249,7 @@
 			var a = 1;
 			ret = confirm("ルーム" + id + "に移動します");
 			if (ret == true) {
-				location.href = "http://localhost/Touronnomori/kaihatsu/discussion.html?&&room" + id + "&&par";
+				location.href = "http://localhost/SS2ATouronnomori/discussion.html?&&room" + id + "&&par";
 
 			}
 		}
@@ -218,130 +259,151 @@
 		var room = [];
 		var docRef = db.collection("chatroom");
 		docRef.get().then((query) => {
-					query.forEach((doc) => {
+			query.forEach((doc) => {
 
-						var data = doc.data();
-						room.push(doc.id);
-					});
-					console.log(room);
-
-
+				var data = doc.data();
+				room.push(doc.id);
+			});
+			console.log(room);
 
 
-						var messagesRef = db.collection("chatroom");
-						messagesRef.doc("room1").collection("theme").onSnapshot((snapshot) => {
-							snapshot.docChanges().forEach((change) => {
-								// 追加
-								if (change.type === 'added') {
-									var room = "room1";
-									addLog(change.doc.id, change.doc.data(), room);
-								}
-							});
-						});
-						var messagesRef = db.collection("chatroom");
-						messagesRef.doc("room2").collection("theme").onSnapshot((snapshot) => {
-							snapshot.docChanges().forEach((change) => {
-								// 追加
-								if (change.type === 'added') {
-									var room = "room2";
-									addLog(change.doc.id, change.doc.data(), room);
-								}
-							});
-						});
-						var messagesRef = db.collection("chatroom");
-						messagesRef.doc("room3").collection("theme").onSnapshot((snapshot) => {
-							snapshot.docChanges().forEach((change) => {
-								// 追加
-								if (change.type === 'added') {
-									var room = "room3";
-									addLog(change.doc.id, change.doc.data(), room);
-								}
-							});
-						});
-						var messagesRef = db.collection("chatroom");
-						messagesRef.doc("room4").collection("theme").onSnapshot((snapshot) => {
-							snapshot.docChanges().forEach((change) => {
-								// 追加
-								if (change.type === 'added') {
-									var room = "room4";
-									addLog(change.doc.id, change.doc.data(), room);
-								}
-							});
-						});
-						var messagesRef = db.collection("chatroom");
-						messagesRef.doc("room5").collection("theme").onSnapshot((snapshot) => {
-							snapshot.docChanges().forEach((change) => {
-								// 追加
-								if (change.type === 'added') {
-									var room = "room5";
-									addLog(change.doc.id, change.doc.data(), room);
-								}
-							});
-						});
-						var messagesRef = db.collection("chatroom");
-						messagesRef.doc("room6").collection("theme").onSnapshot((snapshot) => {
-							snapshot.docChanges().forEach((change) => {
-								// 追加
-								if (change.type === 'added') {
-									var room = "room6";
-									addLog(change.doc.id, change.doc.data(), room);
-								}
-							});
-						});
-						var messagesRef = db.collection("chatroom");
-						messagesRef.doc("room7").collection("theme").onSnapshot((snapshot) => {
-							snapshot.docChanges().forEach((change) => {
-								// 追加
-								if (change.type === 'added') {
-									var room = "room7";
-									addLog(change.doc.id, change.doc.data(), room);
-								}
-							});
-						});
-						var messagesRef = db.collection("chatroom");
-						messagesRef.doc("room8").collection("theme").onSnapshot((snapshot) => {
-							snapshot.docChanges().forEach((change) => {
-								// 追加
-								if (change.type === 'added') {
-									var room = "room8";
-									addLog(change.doc.id, change.doc.data(), room);
-								}
-							});
-						});
-						var messagesRef = db.collection("chatroom");
-						messagesRef.doc("room9").collection("theme").onSnapshot((snapshot) => {
-							snapshot.docChanges().forEach((change) => {
-								// 追加
-								if (change.type === 'added') {
-									var room = "room9";
-									addLog(change.doc.id, change.doc.data(), room);
-								}
-							});
-						});
-						var messagesRef = db.collection("chatroom");
-						messagesRef.doc("room10").collection("theme").onSnapshot((snapshot) => {
-							snapshot.docChanges().forEach((change) => {
-								// 追加
-								if (change.type === 'added') {
-									var room = "room10";
-									addLog(change.doc.id, change.doc.data(), room);
-								}
-							});
-						});
+
+
+			var messagesRef = db.collection("chatroom");
+			messagesRef.doc("room1").collection("roominfo").doc("room1").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room1";
+					var count = "count1";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room2").collection("roominfo").doc("room2").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room2";
+					var count = "count2";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room3").collection("roominfo").doc("room3").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room3";
+					var count = "count3";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room4").collection("roominfo").doc("room4").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room4";
+					var count = "count4";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room5").collection("roominfo").doc("room5").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room5";
+					var count = "count5";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room6").collection("roominfo").doc("room6").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room6";
+					var count = "count6";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room7").collection("roominfo").doc("room7").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room7";
+					var count = "count7";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room8").collection("roominfo").doc("room8").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room8";
+					var count = "count8";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room9").collection("roominfo").doc("room9").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room9";
+					var count = "count9";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room10").collection("roominfo").doc("room10").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room10";
+					var count = "count10";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
 		}).catch((error) => {
-					console.log(`データの取得に失敗しました (${error})`);
-				});
+			console.log(`データの取得に失敗しました (${error})`);
+		});
 
 	</script>
 	<script>
-		function addLog(id, data, room) {
-			// 追加するHTMLを作成
 
-
-			var str = data.odai;
-			console.log(room);
-
+		function addlog(data, room, count) {
+			var str = data.theme;
+			console.log(typeof str);
+			var cnt = Object.entries(data.users);
+			console.log(cnt);
 			document.querySelector(`#${room}`).innerText = str;
+			document.querySelector(`#${count}`).innerText = String(cnt);
 		}
 
 	</script>
