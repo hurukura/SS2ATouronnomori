@@ -27,6 +27,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 	</script>
 	<script>
 		var uname;
+		var userid;
 		firebase.auth().onAuthStateChanged((user) => {
 			let logout = document.getElementById("logout");
 
@@ -86,6 +87,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		//遷移元から値（ルームid）を受け取る
 		var query = location.search;
 		var value = query.split('?&&');
+		var a = new Array();
 
 		console.log("value = " + value);
 
@@ -105,61 +107,72 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			P_users = doc.data();
 			P_users = P_users.users;
 			console.log("P_users:" + P_users);
-			usersssss(P_users.length);
+			usersssss(P_users.length,roomid);
 
 		});
 
 
 
 
-		function usersssss(len) {
+		function usersssss(len,roomid) {
 			//配列からそれぞれ参加ユーザーごとのaタグを生成
 			for (i = 0; i < len; i++) {
 				console.log('ユーザーID=' + P_users[i]);
 
 				//iのuid定義
 				var uid = P_users[i];
-				//div
-				var div_member = document.getElementById('member');
-
-
-
-
+				
 				//aタグ生成
-				var k = '<a href="acount_info.html?uid=' + P_users[i] + '" id="user' + i + '" >now loading･･･</a><br>'
-
+				var a = '<a href="acount_info.html?uid=' + P_users[i] + '" id="user' + i + '" >'a'</a><br>';
+				
+				var ab = '<a href="acount_info.html?uid=${}">${}</a><br>';
+				
 				//			aタグのid定義
 				var U_id = '#user' + i;
-				console.log(U_id);
+				console.log("U_id:"+U_id);
 
 				let Btn_user = document.querySelector(U_id);
 
-				console.log(k);
-				//生成したhtmlを表示させる
-				div_member.innerHTML = k;
+				console.log(a);
+				
+				var Ataguser_docRef = db.collection("chatroom").doc(roomid).collection("roominfo").doc(roomid);
+			
+				Ataguser_docRef.update({
+					//　ここにDBへの書き込みコード
+					name: 
 
-				btn_name(U_id, P_users[i]);
+				})
+					.then(function() {
+					console.log("Document successfully written!");
+				})
+					.catch(function(error) {
+					console.error("Error writing document: ", error);
+				});
+				
+				
+				
+//				btn_name(U_id, P_users[i]);
 			}
 		}
 
-		function btn_name(id, Pname) {
-			//db定義
-			const docRef = db.collection("users").doc(Pname);
-			//データの読み取り
-			docRef.get().then((doc) => {
-					if (doc.exists) {
-						console.log(doc.data());
-						let name = doc.data()["username"];
-						console.log(name);
-						document.querySelector(id).textContent = name;
-					} else {
-						console.log("404");
-					}
-				})
-				.catch((error) => {
-					console.log(`データを取得できませんでした (${error})`);
-				});
-		}
+//		function btn_name(id, Pname) {
+//			//db定義
+//			const docRef = db.collection("users").doc(Pname);
+//			//データの読み取り
+//			docRef.get().then((doc) => {
+//					if (doc.exists) {
+//						console.log(doc.data());
+//						let name = doc.data()["username"];
+//						console.log(name);
+//						document.querySelector(id).textContent = name;
+//					} else {
+//						console.log("404");
+//					}
+//				})
+//				.catch((error) => {
+//					console.log(`データを取得できませんでした (${error})`);
+//				});
+//		}
 
 	</script>
 
@@ -254,7 +267,8 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 					name: uname,
 					msg: msg,
 					flag: flag,
-					date: new Date().getTime()
+					date: new Date().getTime(),
+					id: userid
 				})
 				.then(() => {
 					let msg = document.getElementById("bms_send_message");
@@ -276,15 +290,16 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 
 			if (data.name == uname) {
 				if (data.flag == 0) {
-					var str = `<div class="bms_message bms_right bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name">${data.name}</div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_right bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					console.log(data.id);
 				} else {
-					var str = `<div class="bms_message bms_left bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name">${data.name}</div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_left bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				}
 			} else {
 				if (data.flag == 0) {
-					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name">${data.name}</div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				} else {
-					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name">${data.name}</div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				}
 			}
 			document.getElementById("bms_messages").innerHTML += str;
@@ -299,9 +314,9 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				log.innerText = `${data.name}: ${data.msg} (${getStrTime(data.date)})`;
 
 				if (data.flag == 0) {
-					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text">${data.name}<br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text"><a href="acount_info.html?uid=${data.id}">${data.name}</a><br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				} else {
-					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text">${data.name}<br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text"><a href="acount_info.html?uid=${data.id}">${data.name}</a><br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				}
 			}
 		}
