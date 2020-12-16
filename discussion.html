@@ -14,48 +14,16 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 
 <body>
 	<div id="info"></div>
-		<form>
-			<button type="button" id="logout" class="hide">ログアウト</button>
-		</form>
+	<form>
+		<button type="button" id="logout" class="hide">ログアウト</button>
 		<h1>討論の杜</h1>
-		<h2>...Please wait</h2>
-
-	<!-- 発言が表示される領域 -->
-	<div id="your_container">
-		<div id="bms_messages">
-		</div>
-	</div>
-
-	<!-- 入力フォーム -->
-	<form id="form1">
-		<div id="uname"></div>
-		<div id="bms_send">
-			<textarea id="bms_send_message"></textarea>
-			<div id="radio">
-				<input type="radio" name="flag" value="0">賛成
-				<br><input type="radio" name="flag" value="1">反対
-			</div>
-			<div id="bms_send_btn">送信</div>
-		</div>
 	</form>
 
-	<!-- 以下script -->
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-firestore.js"></script>
-	<script>
-		var firebaseConfig = { // 共有アカウント
-			apiKey: "AIzaSyCKJKx0gUnD2qBB3cdyk_wZ8bJAwdeqFWw",
-			authDomain: "touronnomori.firebaseapp.com",
-			databaseURL: "https://touronnomori.firebaseio.com",
-			projectId: "touronnomori",
-			storageBucket: "touronnomori.appspot.com",
-			messagingSenderId: "638781936294",
-			appId: "1:638781936294:web:32215a2b2d87370fb5da67",
-			measurementId: "G-F5WWPJ82Q4"
-		};
-		// Initialize Firebase
-		firebase.initializeApp(firebaseConfig);
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
+
+	<script src="js/config.js">
 	</script>
 	<script>
 		var uname;
@@ -76,9 +44,9 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			// ログイン者への処理
 			//-----------------------------------
 			// ログインメッセージ
-			showMessage('ようこそ！', `ログイン中 : ${user.displayName}さん`);
+			showMessage(`ログイン中 : ${user.displayName}さん`);
 			console.log(user);
-			
+
 			//unameにユーザー名表示
 			uname = user.displayName;
 			document.querySelector('#uname').innerText = uname;
@@ -107,20 +75,120 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		/**
 		 * メッセージ表示
 		 **/
-		function showMessage(title, msg) {
-			document.querySelector('h2').innerText = title;
+		function showMessage(msg) {
 			document.querySelector('#info').innerText = msg;
 		}
 
 	</script>
 
+	<!--参加ユーザーの表示-->
+	<script>
+		//遷移元から値（ルームid）を受け取る
+		var query = location.search;
+		var value = query.split('?&&');
+
+		console.log("value = " + value);
+
+		//ルームidの定義
+		var roomid = value[1];
+		console.log("roomid = " + roomid);
+
+		//db定義
+		var db = firebase.firestore();
+		const docRef0 = db.collection("chatroom").doc(roomid);
+
+		//参加ユーザーのuid用の配列定義
+		var P_users;
+
+		docRef0.onSnapshot(function(doc) {
+			console.log("Current data: ", doc.data());
+			P_users = doc.data();
+			P_users = P_users.users;
+			console.log("P_users:" + P_users);
+			usersssss(P_users.length);
+
+		});
+
+
+
+
+		function usersssss(len) {
+			//配列からそれぞれ参加ユーザーごとのaタグを生成
+			for (i = 0; i < len; i++) {
+				console.log('ユーザーID=' + P_users[i]);
+
+				//iのuid定義
+				var uid = P_users[i];
+				//div
+				var div_member = document.getElementById('member');
+
+
+
+
+				//aタグ生成
+				var k = '<a href="acount_info.html?uid=' + P_users[i] + '" id="user' + i + '" >now loading･･･</a><br>'
+
+				//			aタグのid定義
+				var U_id = '#user' + i;
+				console.log(U_id);
+
+				let Btn_user = document.querySelector(U_id);
+
+				console.log(k);
+				//生成したhtmlを表示させる
+				div_member.innerHTML = k;
+
+				btn_name(U_id, P_users[i]);
+			}
+		}
+
+		function btn_name(id, Pname) {
+			//db定義
+			const docRef = db.collection("users").doc(Pname);
+			//データの読み取り
+			docRef.get().then((doc) => {
+					if (doc.exists) {
+						console.log(doc.data());
+						let name = doc.data()["username"];
+						console.log(name);
+						document.querySelector(id).textContent = name;
+					} else {
+						console.log("404");
+					}
+				})
+				.catch((error) => {
+					console.log(`データを取得できませんでした (${error})`);
+				});
+		}
+
+	</script>
+
+	<!-- 発言が表示される領域 -->
+	<div id="your_container">
+		<div id="bms_messages">
+		</div>
+	</div>
+
+	<!-- 入力フォーム -->
+	<form id="form1">
+		<div id="uname"></div>
+		<div id="bms_send">
+			<textarea id="bms_send_message"></textarea>
+			<div id="radio">
+				<input type="radio" name="flag" value="0">賛成
+				<br><input type="radio" name="flag" value="1">反対
+			</div>
+			<div id="bms_send_btn">送信</div>
+		</div>
+	</form>
+
+	<!-- 以下script -->
 	<script>
 		//---------------------------------------
 		// チャット初期処理
 		//---------------------------------------
-		// ユーザー名をランダムに決める
-		//★ユーザー名を表示させる		
 
+		//観戦
 		var del = location.search.split('&&');
 		console.log(del);
 
@@ -133,16 +201,19 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			// none に設定して非表示
 			id1.style.display = 'none';
 		}
+		/////
+
 
 		//---------------------------------------
 		// Firestoreの準備
 		//---------------------------------------
 		// Firestoreのインスタンス作成
-		var db = firebase.firestore();
+		//			var db = firebase.firestore();
 
 		// チャットルームのリファレンス取得
 		//    ★home.phpで選択したルームIDを ここ↓  に入れる
 		console.log(del[1]);
+		var db = firebase.firestore();
 		var messagesRef = db.collection("chatroom").doc(del[1]).collection("messages");
 
 		/**
@@ -257,6 +328,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				("0" + t.getMinutes()).slice(-2)
 			);
 		}
+
 	</script>
 </body>
 
