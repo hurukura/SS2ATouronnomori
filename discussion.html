@@ -1,108 +1,271 @@
+<!--
+参考資料
+https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
+-->
+<!DOCTYPE html>
 <html>
 
 <head>
 	<meta charset="utf-8">
-	<title>討論の杜 | アカウントプロフィール</title>
-	<h1>討論の杜</h1>
-	<h2></h2>
-	<div id="info"></div>
-	<form>
-		<button type="button" id="logout" class="hide">ログアウト</button>
-	</form>
-	<h3>アカウントプロフィール</h3>
+	<link rel="stylesheet" href="css/c_discussion.css">
+	<title>FireStore Chat</title>
+
 </head>
 
 <body>
+	<div id="info"></div>
+	<form>
+		<button type="button" id="logout" class="hide">ログアウト</button>
+		<h1>討論の杜</h1>
+	</form>
 
-	<!--    モジュール   -->
-
-	<!--    firebase    -->
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-firestore.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
-	<!--    firestoe    -->
-	<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
 
-	<!--    設定読み込み   -->
-	<script src="js/config.js"></script>
+	<script src="js/config.js">
+	</script>
+	<script>
+		var uname;
+		var userid;
+		firebase.auth().onAuthStateChanged((user) => {
+			let logout = document.getElementById("logout");
 
-
-	<img src="" id="icon">
-	<div id="username">ユーザー名 : now loading･･･</div>
-	<div id="seibetu">性別 : now loading･･･</div>
-	<div id="nendai">年代 : now loading･･･</div>
-
-	<a href="acount_setting.html">アカウントの設定へ</a>
-	<h3>過去に参加した討論</h3>
-
-
-	<script src="js/auth.js"></script>
-
-</body>
-
-
-<script>
-
-	let uname = document.querySelector('#username');
-	let useibetu = document.querySelector('#seibetu');
-	let unendai = document.querySelector('#nendai');
-
-
-
-	//遷移元から値を受け取る
-	var query = location.search;
-	var value = query.split('=');
-	var uid = value[1];
-
-	console.log('遷移元から受け取ったUID＝' + uid);
-
-
-	//firestore定義
-	const db = firebase.firestore();
-	var docRef = db.collection("users").doc(value[1]);
-
-	// データの読み取り
-
-	docRef.get().then((doc) => {
-			if (doc.exists) {
-				console.log(doc.data());
-
-				unendai = doc.data()["nendai"];
-				useibetu = doc.data()["seibetu"];
-				uname = doc.data()["username"];
-
-				//年代と性別を設定していない場合
-				if (useibetu == undefined && unendai == undefined) {
-					useibetu = "未設定";
-					unendai = "未設定";
-				}
-
-				console.log(unendai, useibetu, uname);
-
-				showAcountProf('ユーザー名 : ' + uname, '性別 : ' + useibetu, '年代 : ' + unendai);
-
-
-			} else {
-				console.log("404");
-				console.log('アカウントが見つからないので3秒後に討論画面へ戻ります。');
-				setTimeout(history.back(), waitTimer * 3000);
+			//-----------------------------------
+			// ログインチェック
+			//-----------------------------------
+			if (!user) {
+				showMessage('Not Login', 'ログインしていません');
+				logout.classList.add("hide");
+				window.location.href = 'login.html';
+				return (false);
 			}
-		})
-		.catch((error) => {
-			console.log(`データを取得できませんでした (${error})`);
+
+			//-----------------------------------
+			// ログイン者への処理
+			//-----------------------------------
+			// ログインメッセージ
+			showMessage(`ログイン中 : ${user.displayName}さん`);
+			console.log(user);
+
+			//unameにユーザー名表示
+			uname = user.displayName;
+			document.querySelector('#uname').innerText = uname;
+
+			userid = user.uid;
+			console.log(userid);
+
+			// ログアウトボタンを表示
+			logout.classList.remove("hide");
+
+			// ログアウトボタンを押下
+			logout.addEventListener("click", () => {
+				firebase.auth().signOut().then(() => {
+						console.log("ログアウトしました");
+
+						//アラートを表示
+						window.alert('ログアウトしました。またきてね');
+						//OKでログイン画面へ遷移
+						window.location.href = 'login.html'
+					})
+					.catch((error) => {
+						console.log(`ログアウト時にエラーが発生しました (${error})`);
+					});
+			});
+		});
+		/**
+		 * メッセージ表示
+		 **/
+		function showMessage(msg) {
+			document.querySelector('#info').innerText = msg;
+		}
+
+	</script>
+
+	<!--参加ユーザーの表示-->
+	<script>
+		//遷移元から値（ルームid）を受け取る
+		var query = location.search;
+		var value = query.split('&&');
+		var a = new Array();
+
+		console.log("value = " + value);
+
+		//ルームidの定義
+		var roomid = value[1];
+		console.log("roomid = " + roomid);
+
+	</script>
+
+	<!-- 発言が表示される領域 -->
+	<div id="your_container">
+		<div id="bms_messages">
+		</div>
+	</div>
+
+	<!-- 入力フォーム -->
+	<form id="form1">
+		<div id="uname"></div>
+		<div id="bms_send">
+			<textarea id="bms_send_message"></textarea>
+			<div id="radio">
+				<input type="radio" name="flag" value="0">賛成
+				<br><input type="radio" name="flag" value="1">反対
+			</div>
+			<div id="bms_send_btn">送信</div>
+		</div>
+	</form>
+
+	<!-- 以下script -->
+	<script>
+		//---------------------------------------
+		// チャット初期処理
+		//---------------------------------------
+
+		//観戦
+		var del = location.search.split('&&');
+		console.log(del);
+
+
+		// 要素を取得
+		if (del[2] == 'par') {
+			let id1 = document.getElementById('form1');
+			// 現在の display プロパティの値を保持
+			const displayOriginal = id1.style.display;
+			// none に設定して非表示
+			id1.style.display = 'none';
+		}
+		/////
+
+
+		//---------------------------------------
+		// Firestoreの準備
+		//---------------------------------------
+		// Firestoreのインスタンス作成
+		//			var db = firebase.firestore();
+
+		// チャットルームのリファレンス取得
+		//    ★home.phpで選択したルームIDを ここ↓  に入れる
+		console.log(del[1]);
+		var db = firebase.firestore();
+		var messagesRef = db.collection("chatroom").doc(del[1]).collection("messages");
+
+		/**
+		 * 同期処理
+		 **/
+		messagesRef.orderBy("date", "asc").limit(20).onSnapshot((snapshot) => {
+			snapshot.docChanges().forEach((change) => {
+				// 追加
+				if (change.type === 'added') {
+					addLog(change.doc.id, change.doc.data());
+				}
+				// 更新
+				else if (change.type === 'modified') {
+					modLog(change.doc.id, change.doc.data());
+				}
+				// 削除
+				else if (change.type === 'removed') {
+					removeLog(change.doc.id);
+				}
+			});
 		});
 
-	// データの読み取りここまで
+		/**
+		 * 送信ボタン押下
+		 **/
+		document.getElementById("bms_send_btn").addEventListener("click", () => {
+			let msg = document.getElementById("bms_send_message").value;
+			if (msg.length === 0) {
+				return (false);
+			}
+			let flag = document.getElementById("form1").flag.value;
+			if (flag.length === 0) {
+				console.log(flag);
+				return (false);
+			}
+			// メッセージをfirestoreへ送信
+			messagesRef.add({
+					name: uname,
+					msg: msg,
+					flag: flag,
+					date: new Date().getTime(),
+					id: userid
+				})
+				.then(() => {
+					let msg = document.getElementById("bms_send_message");
+					msg.focus();
+					msg.value = "";
+				})
+		});
+		// submitイベントは（いったん）無視する
+		document.getElementById("form1").addEventListener("submit", (e) => {
+			e.preventDefault();
+		});
 
-	/**
-	 * メッセージ表示
-	 **/
 
-	function showAcountProf(fname, fseibetu, fnendai) {
-		document.querySelector('#username').innerText = fname;
+		/**
+		 * ログに追加
+		 */
+		function addLog(id, data) {
+			// 追加するHTMLを作成
 
-		document.querySelector('#seibetu').innerText = fseibetu;
+			if (data.name == uname) {
+				if (data.flag == 0) {
+					var str = `<div class="bms_message bms_right bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					console.log(data.id);
+				} else {
+					var str = `<div class="bms_message bms_left bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+				}
+			} else {
+				if (data.flag == 0) {
+					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+				} else {
+					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+				}
+			}
+			document.getElementById("bms_messages").innerHTML += str;
+		}
 
-		document.querySelector('#nendai').innerText = fnendai;
+		/**
+		 * ログを更新
+		 */
+		function modLog(id, data) {
+			let log = document.getElementById(id);
+			if (log !== null) {
+				log.innerText = `${data.name}: ${data.msg} (${getStrTime(data.date)})`;
 
-	}
-</script></html>
+				if (data.flag == 0) {
+					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text"><a href="acount_info.html?uid=${data.id}">${data.name}</a><br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+				} else {
+					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text"><a href="acount_info.html?uid=${data.id}">${data.name}</a><br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+				}
+			}
+		}
+
+		/**
+		 * ログを削除
+		 **/
+		function removeLog(id) {
+			let log = document.getElementById(id);
+			if (log !== null) {
+				log.parentNode.removeChild(log);
+			}
+		}
+
+		/**
+		 * UNIX TIME => MM-DD hh:mm
+		 **/
+		function getStrTime(time) {
+			let t = new Date(time);
+			return (
+				("0" + (t.getMonth() + 1)).slice(-2) + "-" +
+				("0" + t.getDate()).slice(-2) + " " +
+				("0" + t.getHours()).slice(-2) + ":" +
+				("0" + t.getMinutes()).slice(-2)
+			);
+		}
+
+	</script>
+</body>
+
+</html>
