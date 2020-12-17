@@ -7,10 +7,12 @@ $result;
 
 
 ?>
+<html>
 
 <head>
-<h1>討論結果</h1>
-<style>
+	<meta charset="utf-8">
+	<h1>討論結果</h1>
+	<style>
 		body {
 			text-align: center;
 		}
@@ -25,11 +27,13 @@ $result;
 			text-align: center;
 			/*一応BOX内の文字も中央寄せ*/
 		}
+
 	</style>
 </head>
+
 <body>
-<p id="odai">お題:    ここに討論DBからお題の値    </p>
-<div id="domannaka">
+	<p id="odai">お題: ここに討論DBからお題の値 </p>
+	<div id="domannaka">
 		<canvas id="myPieChart"></canvas>
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
@@ -59,8 +63,10 @@ $result;
 				}
 			}
 		});
+
 	</script>
-    
-    <a href="home.php">ホーム画面へ</a>
+
+	<a href="home.html">ホーム画面へ</a>
 
 </body>
+</html>
