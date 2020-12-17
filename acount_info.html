@@ -4,12 +4,16 @@
 	<meta charset="utf-8">
 	<title>討論の杜 | アカウントプロフィール</title>
 	<h1>討論の杜</h1>
-	<h3>Acount Status</h3>
-	<h2>アカウントプロフィール</h2>
+	<h2></h2>
+	<div id="info"></div>
+	<form>
+		<button type="button" id="logout" class="hide">ログアウト</button>
+	</form>
+	<h3>アカウントプロフィール</h3>
 </head>
 
 <body>
-	<div id="info"></div>
+
 	<!--    モジュール   -->
 
 	<!--    firebase    -->
@@ -23,107 +27,75 @@
 
 
 	<img src="" id="icon">
-	<div id="username">na</div>
-	<div id="seibetu">se</div>
-	<div id="nendai">nen</div>
+	<div id="username">ユーザー名 : now loading･･･</div>
+	<div id="seibetu">性別 : now loading･･･</div>
+	<div id="nendai">年代 : now loading･･･</div>
 
 	<a href="acount_setting.html">アカウントの設定へ</a>
-	<h2>過去に参加した討論</h2>
+	<h3>過去に参加した討論</h3>
 
-	<button type="button" id="logout" class="hide">ログアウト</button>
 
+	<script src="js/auth.js"></script>
 
 </body>
 
+
 <script>
-	firebase.auth().onAuthStateChanged((user) => {
-		let logout = document.getElementById("logout");
 
-		let h3 = document.querySelector('h3');
-		let uname = document.querySelector('#username');
-		let useibetu = document.querySelector('#seibetu');
-		let unendai = document.querySelector('#nendai');
-
-		//-----------------------------------
-		// ログインチェック
-		//-----------------------------------
-		if (!user) {
-			showMessage('Not Login');
-			logout.classList.add("hide");
-			window.location.href = 'login.php';
-			return (false);
-		}
-
-		//-----------------------------------
-		// ログイン者への処理
-		//-----------------------------------
-		// ログインメッセージ
-
-		console.log(user);
-		showMessage('ログイン中 : ' + user.displayName + 'さん');
-
-		// ログアウトボタンを表示
-		logout.classList.remove("hide");
-
-		//uidの取得
-		var Tuid = firebase.auth().currentUser.uid;
-
-		//firestore定義
-		const db = firebase.firestore();
-		var docRef = db.collection("users").doc(user.uid);
-
-		// データの読み取り
+	let uname = document.querySelector('#username');
+	let useibetu = document.querySelector('#seibetu');
+	let unendai = document.querySelector('#nendai');
 
 
-		// データの読み取りここまで
 
-		docRef.get().then((doc) => {
-				if (doc.exists) {
-					console.log(doc.data());
-					
-					unendai = doc.data()["nendai"];
-					useibetu = doc.data()["seibetu"];
-					uname = doc.data()["username"];
-					
-					console.log(unendai,useibetu,uname);
-					
-					showAcountProf('アカウント名 : ' + uname,'性別 : ' + useibetu,'年代 : ' + unendai);
-					
-					
-				} else {
-					console.log("404");
+	//遷移元から値を受け取る
+	var query = location.search;
+	var value = query.split('=');
+	var uid = value[1];
+
+	console.log('遷移元から受け取ったUID＝' + uid);
+
+
+	//firestore定義
+	const db = firebase.firestore();
+	var docRef = db.collection("users").doc(value[1]);
+
+	// データの読み取り
+
+	docRef.get().then((doc) => {
+			if (doc.exists) {
+				console.log(doc.data());
+
+				unendai = doc.data()["nendai"];
+				useibetu = doc.data()["seibetu"];
+				uname = doc.data()["username"];
+
+				//年代と性別を設定していない場合
+				if (useibetu == undefined && unendai == undefined) {
+					useibetu = "未設定";
+					unendai = "未設定";
 				}
-			})
-			.catch((error) => {
-				console.log(`データを取得できませんでした (${error})`);
-			});
-		
 
-		// ------------------------
-		// ログアウトボタンを押下
-		// ------------------------
-		logout.addEventListener("click", () => {
-			firebase.auth().signOut().then(() => {
-					console.log("ログアウトしました");
+				console.log(unendai, useibetu, uname);
 
-					//アラートを表示
-					window.alert('ログアウトしました。またきてね');
-					//OKでログイン画面へ遷移
-					window.location.href = 'login.html'
-				})
-				.catch((error) => {
-					console.log(`ログアウト時にエラーが発生しました (${error})`);
-				});
+				showAcountProf('ユーザー名 : ' + uname, '性別 : ' + useibetu, '年代 : ' + unendai);
+
+
+			} else {
+				console.log("404");
+				console.log('アカウントが見つからないので3秒後に討論画面へ戻ります。');
+				setTimeout(history.back(), waitTimer * 3000);
+			}
+		})
+		.catch((error) => {
+			console.log(`データを取得できませんでした (${error})`);
 		});
-	});
 
+	// データの読み取りここまで
 
 	/**
 	 * メッセージ表示
 	 **/
-	function showMessage(title) {
-		document.querySelector('h3').innerText = title;
-	}
 
 	function showAcountProf(fname, fseibetu, fnendai) {
 		document.querySelector('#username').innerText = fname;
@@ -133,9 +105,4 @@
 		document.querySelector('#nendai').innerText = fnendai;
 
 	}
-
-</script>
-
-
-
-</html>
+</script></html>

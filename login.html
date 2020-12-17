@@ -1,40 +1,327 @@
-<!DOCTYPE html>
-<html>
+<?php
+
+?>
+
 <head>
-  <meta charset="utf-8">
-  <title>討論の杜 | ログイン</title>
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
-  <style>h1{text-align: center;}</style>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="css/c_home.css">
+	<title>討論の杜</title>
 </head>
+
 <body>
-  <h1>討論の杜へログイン、新規登録</h1>
-  <div id="firebaseui-auth-container"></div>
 
-  <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/ui/3.5.2/firebase-ui-auth__ja.js"></script>
-  <script src="js/config.js"></script>
-  <script>
-    //----------------------------------------------
-    // Firebase UIの設定
-    //----------------------------------------------
-    var uiConfig = {
-        // ログイン完了時のリダイレクト先
-        signInSuccessUrl: 'http://localhost/SS2ATouronnomori/done.html',
+	<!--    モジュール   -->
 
-        // 利用する認証機能
-        signInOptions: [
-          firebase.auth.EmailAuthProvider.PROVIDER_ID  //メール認証
-        ],
+	<!--    firebase auth   -->
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
 
-        // 利用規約のURL(任意で設定)
-        tosUrl: 'http://example.com/kiyaku/',
-        // プライバシーポリシーのURL(任意で設定)
-        privacyPolicyUrl: 'http://example.com/privacy'
-      };
+	<!--    firestoe    -->
+	<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
 
-      var ui = new firebaseui.auth.AuthUI(firebase.auth());
-      ui.start('#firebaseui-auth-container', uiConfig);
-</script>
+	<!--    モジュールここまで   -->
+	<script src="js/config.js"></script>
+	
+	<script>
+		var userid = "";
+
+	</script>
+
+	<div class="home">
+		<div id="info"></div>
+		<form>
+			<button type="button" id="logout" class="hide">ログアウト</button>
+		</form>
+		<h1>討論の杜</h1>
+		<h2 id="welcom">...Please wait</h2>
+
+		<h3 style="text-align: center">現在行われている討論</h3>
+		<!-- <div id="maintable"></div>-->
+		<table class="discussion_table" id="roomtable" border="1" frame="void" width="400" height="250">
+			<tr>
+				<th>No.</th>
+				<th>お題</th>
+				<th>参加人数</th>
+				<th>参加/観戦</th>
+			</tr>
+			<tr>
+				<td align='center'>1</td>
+				<td align='center'>
+					<div id='room1'></div>
+				</td>
+				<td align='center'>2</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(1)' value='参加' /><input type='button' name='kansenroom' onclick='participation(1)' value='観戦' /></td>
+			</tr>
+			<tr>
+				<td align='center'>2</td>
+				<td align='center'>
+					<div id='room2'></div>
+				</td>
+				<td align='center'>2</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(2)' value='参加' /><input type='button' name='kansenroom' onclick='participation(2)' value='観戦' /></td>
+			</tr>
+			<tr>
+				<td align='center'>3</td>
+				<td align='center'>
+					<div id='room3'></div>
+				</td>
+				<td align='center'>2</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(3)' value='参加' /><input type='button' name='kansenroom' onclick='participation(3)' value='観戦' /></td>
+			</tr>
+			<tr>
+				<td align='center'>4</td>
+				<td align='center'>
+					<div id='room4'></div>
+				</td>
+				<td align='center'>2</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(4)' value='参加' /><input type='button' name='kansenroom' onclick='participation(4)' value='観戦' /></td>
+			</tr>
+			<tr>
+				<td align='center'>5</td>
+				<td align='center'>
+					<div id='room5'></div>
+				</td>
+				<td align='center'>2</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(5)' value='参加' /><input type='button' name='kansenroom' onclick='participation(5)' value='観戦' /></td>
+			</tr>
+			<tr>
+				<td align='center'>6</td>
+				<td align='center'>
+					<div id='room6'></div>
+				</td>
+				<td align='center'>2</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(6)' value='参加' /><input type='button' name='kansenroom' onclick='participation(6)' value='観戦' /></td>
+			</tr>
+			<tr>
+				<td align='center'>7</td>
+				<td align='center'>
+					<div id='room7'></div>
+				</td>
+				<td align='center'>2</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(7)' value='参加' /><input type='button' name='kansenroom' onclick='participation(7)' value='観戦' /></td>
+			</tr>
+			<tr>
+				<td align='center'>8</td>
+				<td align='center'>
+					<div id='room8'></div>
+				</td>
+				<td align='center'>2</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(8)' value='参加' /><input type='button' name='kansenroom' onclick='participation(8)' value='観戦' /></td>
+			</tr>
+			<tr>
+				<td align='center'>9</td>
+				<td align='center'>
+					<div id='room9'></div>
+				</td>
+				<td align='center'>2</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(9)' value='参加' /><input type='button' name='kansenroom' onclick='participation(9)' value='観戦' /></td>
+			</tr>
+			<tr>
+				<td align='center'>10</td>
+				<td align='center'>
+					<div id='room10'></div>
+				</td>
+				<td align='center'>2</td>
+				<td align='center'><input type='button' name='chatroom' onclick='discussion(10)' value='参加' /><input type='button' name='kansenroom' onclick='participation(10)' value='観戦' /></td>
+			</tr>
+		</table>
+
+		<a id="setting_yudo" href="acount_setting.html">アカウントの設定</a>
+
+
+	</div>
+
+
+	<!--	ここからJavaScript		-->
+	<script src="js/auth.js"></script>
+
+	
+	<!--FireStoreからルーム情報を取得-->
+	<script>
+		//参加ボタンでトークに参加
+		function discussion(id, userid) {
+			var a = 1;
+			ret = confirm("ルーム" + id + "に移動します");
+			if (ret == true) {
+
+				//ユーザーIDをFirestoreに追加
+				const db = firebase.firestore();
+				const docRef = db.collection("chatroom").doc("room" + id).collection("roominfo").doc("room" + id);
+				docRef.update({
+					users: firebase.firestore.FieldValue.arrayUnion(userid)
+				})
+					.then(function() {
+					console.log("Document successfully written!");
+				})
+					.catch(function(error) {
+					console.error("Error writing document: ", error);
+				});
+
+				location.href = "http://localhost/SS2ATouronnomori/discussion.html?&&room" + id;
+			}
+		}
+		//観戦ボタンでトークを見る
+		function participation(id) {
+			var a = 1;
+			ret = confirm("ルーム" + id + "に移動します");
+			if (ret == true) {
+				location.href = "http://localhost/SS2ATouronnomori/discussion.html?&&room" + id + "&&par";
+
+			}
+		}
+
+
+		var db = firebase.firestore();
+		var room = [];
+		var docRef = db.collection("chatroom");
+		docRef.get().then((query) => {
+			query.forEach((doc) => {
+
+				var data = doc.data();
+				room.push(doc.id);
+			});
+			console.log(room);
+
+
+
+
+			var messagesRef = db.collection("chatroom");
+			messagesRef.doc("room1").collection("roominfo").doc("room1").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room1";
+					var count = "count1";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room2").collection("roominfo").doc("room2").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room2";
+					var count = "count2";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room3").collection("roominfo").doc("room3").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room3";
+					var count = "count3";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room4").collection("roominfo").doc("room4").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room4";
+					var count = "count4";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room5").collection("roominfo").doc("room5").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room5";
+					var count = "count5";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room6").collection("roominfo").doc("room6").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room6";
+					var count = "count6";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room7").collection("roominfo").doc("room7").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room7";
+					var count = "count7";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room8").collection("roominfo").doc("room8").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room8";
+					var count = "count8";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room9").collection("roominfo").doc("room9").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room9";
+					var count = "count9";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+			messagesRef.doc("room10").collection("roominfo").doc("room10").get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					var room = "room10";
+					var count = "count10";
+					addlog(doc.data(), room, count);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+		}).catch((error) => {
+			console.log(`データの取得に失敗しました (${error})`);
+		});
+
+	</script>
+	<script>
+
+		function addlog(data, room, count) {
+			var str = data.theme;
+			console.log(typeof str);
+			var cnt = Object.entries(data.users);
+			console.log(cnt.length);
+			document.querySelector(`#${room}`).innerText = str;
+			document.querySelector(`#${count}`).innerText = String(cnt.length);
+		}
+
+	</script>
+
 </body>
-</html>
