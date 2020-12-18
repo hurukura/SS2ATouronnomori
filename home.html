@@ -22,6 +22,7 @@
 	<script src="js/config.js"></script>
 	<script>
 		var userid = "";
+
 	</script>
 
 	<div class="home">
@@ -204,28 +205,54 @@
 
 	<!--FireStoreからルーム情報を取得-->
 	<script>
+		
 		//参加ボタンでトークに参加
-		function discussion(id, userid) {
+		//参加人数を集計しdiscussion_goに渡す	snapshotにラグがあるためこの関数を追加
+		function discussion(id, userid){
+			var c = 0;
+			const db = firebase.firestore();
+			const docRef = db.collection("chatroom").doc("room" + id).collection("roominfo").doc("room" + id);
+			docRef.get().then(function(doc) {
+				if (doc.exists) {
+					console.log("Document data:", doc.data());
+					c = Object.entries(doc.data().users).length;
+					console.log(c);
+					discussion_go(id,userid,c);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+		}
+		
+		//人数に空きがある場合、参加可能になる
+		function discussion_go(id, userid, counter) {
 			var a = 1;
-			ret = confirm("ルーム" + id + "に移動します");
-			if (ret == true) {
+			if (counter < 5) {
+				ret = confirm("ルーム" + id + "に移動します");
+				if (ret == true) {
 
-				//ユーザーIDをFirestoreに追加
-				const db = firebase.firestore();
-				const docRef = db.collection("chatroom").doc("room" + id).collection("roominfo").doc("room" + id);
-				docRef.update({
-						users: firebase.firestore.FieldValue.arrayUnion(userid)
-					})
-					.then(function() {
-						console.log("Document successfully written!");
-					})
-					.catch(function(error) {
-						console.error("Error writing document: ", error);
-					});
+					//ユーザーIDをFirestoreに追加
+					const db = firebase.firestore();
+					const docRef = db.collection("chatroom").doc("room" + id).collection("roominfo").doc("room" + id);
+					docRef.update({
+							users: firebase.firestore.FieldValue.arrayUnion(userid)
+						})
+						.then(function() {
+							console.log("Document successfully written!");
+						})
+						.catch(function(error) {
+							console.error("Error writing document: ", error);
+						});
 
-								location.href = "http://localhost/SS2ATouronnomori/discussion.html?&&room" + id;
+					location.href = "http://localhost/SS2ATouronnomori/discussion.html?&&room" + id;
+				}
+			} else {
+				ret = confirm("ルームは満員です");
 			}
 		}
+		
 		//観戦ボタンでトークを見る
 		function participation(id) {
 			var a = 1;
@@ -240,8 +267,7 @@
 		var db = firebase.firestore();
 		var docRef = db.collection("chatroom");
 		docRef.get().then((query) => {
-			query.forEach((doc) => {
-			});
+			query.forEach((doc) => {});
 			var messagesRef = db.collection("chatroom");
 			//room1~10まで表示（for文で回せずそれぞれ記載）
 			messagesRef.doc("room1").collection("roominfo").doc("room1").get().then(function(doc) {
@@ -367,14 +393,15 @@
 		}).catch((error) => {
 			console.log(`データの取得に失敗しました (${error})`);
 		});
+		
 		//ルーム情報を表示
 		function addlog(data, room, count) {
 			var str = data.theme;
 			console.log(typeof str);
 			var cnt = Object.entries(data.users);
 			console.log(cnt.length);
-			document.querySelector(`#${room}`).innerText = str;	//お題
-			document.querySelector(`#${count}`).innerText = String(cnt.length);	//参加人数
+			document.querySelector(`#${room}`).innerText = str; //お題
+			document.querySelector(`#${count}`).innerText = String(cnt.length); //参加人数
 		}
 
 	</script>
