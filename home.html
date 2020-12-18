@@ -205,19 +205,20 @@
 
 	<!--FireStoreからルーム情報を取得-->
 	<script>
-		
 		//参加ボタンでトークに参加
 		//参加人数を集計しdiscussion_goに渡す	snapshotにラグがあるためこの関数を追加
-		function discussion(id, userid){
+		function discussion(id, userid) {
 			var c = 0;
+			var a_user
 			const db = firebase.firestore();
 			const docRef = db.collection("chatroom").doc("room" + id).collection("roominfo").doc("room" + id);
 			docRef.get().then(function(doc) {
 				if (doc.exists) {
 					console.log("Document data:", doc.data());
+					a_user = Object.entries(doc.data().users);
 					c = Object.entries(doc.data().users).length;
 					console.log(c);
-					discussion_go(id,userid,c);
+					discussion_go(id, userid, c, a_user);
 				} else {
 					console.log("No such document!");
 				}
@@ -225,11 +226,36 @@
 				console.log("Error getting document:", error);
 			});
 		}
-		
-		//人数に空きがある場合、参加可能になる
-		function discussion_go(id, userid, counter) {
+
+		//人数に空きがある場合又はすでに参加している場合、参加可能になる
+		function discussion_go(id, userid, counter, a_user) {
 			var a = 1;
-			if (counter < 5) {
+			var user0 = "",
+				user1 = "",
+				user2 = "",
+				user3 = "",
+				user4 = "";
+			//user0~4に参加者のuseridを入れる
+			for (var i = 0; i < counter; i++) {
+				switch (i) {
+					case 0:
+						user0 = a_user[i][1];
+						break;
+					case 1:
+						user1 = a_user[i][1];
+						break;
+					case 2:
+						user2 = a_user[i][1];
+						break;
+					case 3:
+						user3 = a_user[i][1];
+						break;
+					case 4:
+						user4 = a_user[i][1];
+						break;
+				}
+			}
+			if (counter < 5 || user0 == userid || user1 == userid || user2 == userid || user3 == userid || user4 == userid) {//人数に空きがある場合又はすでに参加している場合
 				ret = confirm("ルーム" + id + "に移動します");
 				if (ret == true) {
 
@@ -252,7 +278,7 @@
 				ret = confirm("ルームは満員です");
 			}
 		}
-		
+
 		//観戦ボタンでトークを見る
 		function participation(id) {
 			var a = 1;
@@ -393,7 +419,7 @@
 		}).catch((error) => {
 			console.log(`データの取得に失敗しました (${error})`);
 		});
-		
+
 		//ルーム情報を表示
 		function addlog(data, room, count) {
 			var str = data.theme;
