@@ -10,9 +10,9 @@ $result;
 <html>
 
 <head>
-	<meta charset="utf-8">
-	<h1>討論結果</h1>
-	<style>
+     <meta charset="utf-8">
+<h1>討論結果</h1>
+<style>
 		body {
 			text-align: center;
 		}
@@ -27,7 +27,11 @@ $result;
 			text-align: center;
 			/*一応BOX内の文字も中央寄せ*/
 		}
+<<<<<<< HEAD
+   
+=======
 
+>>>>>>> 2dd119f1909d35bd2b3196ffb36424205b1dfa02
 	</style>
 </head>
 
@@ -36,14 +40,57 @@ $result;
 	<div id="domannaka">
 		<canvas id="myPieChart"></canvas>
 	</div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js">
+        
+    </script>
+    
+    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
 
+<!-- 投票のスクリプト -->
+    <script src="/path_to/vote.js"></script>
+    
+    
+    <script>
+//        var firebaseConfig = { // 共有アカウント
+//            apiKey: "AIzaSyCKJKx0gUnD2qBB3cdyk_wZ8bJAwdeqFWw",
+//            authDomain: "touronnomori.firebaseapp.com",
+//            databaseURL: "https://touronnomori.firebaseio.com",
+//            projectId: "touronnomori",
+//            storageBucket: "touronnomori.appspot.com",
+//            messagingSenderId: "638781936294",
+//            appId: "1:638781936294:web:32215a2b2d87370fb5da67",
+//            measurementId: "G-F5WWPJ82Q4"
+//        };
+//        // Initialize Firebase
+//        firebase.initializeApp(firebaseConfig);
+
+
+        var firebaseConfig = {  //個人アカウント
+    apiKey: "AIzaSyCIOFVZs74nlVd3dpAlR_bOQOjUltmr2cw",
+    authDomain: "s192003auth.firebaseapp.com",
+    databaseURL: "https://s192003auth.firebaseio.com",
+    projectId: "s192003auth",
+    storageBucket: "s192003auth.appspot.com",
+    messagingSenderId: "717562886212",
+    appId: "1:717562886212:web:3336182bbeee7dd3772411",
+    measurementId: "G-8YEMSLV3YR"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+        
+    </script>
+
+    
 	<script>
 		var ctx = document.getElementById("myPieChart");
 		var myPieChart = new Chart(ctx, {
 			type: 'doughnut',
 			data: {
-				labels: ["賛成", "反対"],
+				labels: ["賛成", "反対"],//賛成0 反対1
 				datasets: [{
 					backgroundColor: [
 						"#13178E",
