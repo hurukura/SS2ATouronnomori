@@ -31,7 +31,7 @@
 			<button type="button" id="logout" class="hide">ログアウト</button>
 		</form>
 		<h1>討論の杜</h1>
-		<h2>...Please wait</h2>
+		<h2 id="welcom">...Please wait</h2>
 
 		<h3 style="text-align: center">現在行われている討論</h3>
 		<!-- <div id="maintable"></div>-->
@@ -151,57 +151,7 @@
 
 
 	<!--	ここからJavaScript		-->
-	<script>
-		firebase.auth().onAuthStateChanged((user) => {
-			let logout = document.getElementById("logout");
-
-			//-----------------------------------
-			// ログインチェック
-			//-----------------------------------
-			if (!user) {
-				showMessage('Not Login', 'ログインしていません');
-				logout.classList.add("hide");
-				window.location.href = 'login.html';
-				return (false);
-			}
-
-			//-----------------------------------
-			// ログイン者への処理
-			//-----------------------------------
-			// ログインメッセージ
-			showMessage('ようこそ！', `ログイン中 : ${user.displayName}さん`);
-			console.log(user);
-
-			userid = user.uid;
-			console.log(userid);
-
-			// ログアウトボタンを表示
-			logout.classList.remove("hide");
-
-			// ログアウトボタンを押下
-			logout.addEventListener("click", () => {
-				firebase.auth().signOut().then(() => {
-						console.log("ログアウトしました");
-
-						//アラートを表示
-						window.alert('ログアウトしました。またきてね');
-						//OKでログイン画面へ遷移
-						window.location.href = 'login.html'
-					})
-					.catch((error) => {
-						console.log(`ログアウト時にエラーが発生しました (${error})`);
-					});
-			});
-		});
-		/**
-		 * メッセージ表示
-		 **/
-		function showMessage(title, msg) {
-			document.querySelector('h2').innerText = title;
-			document.querySelector('#info').innerText = msg;
-		}
-
-	</script>
+	<script src="js/auth.js"></script>
 
 	<!--FireStoreからルーム情報を取得-->
 	<script>
@@ -263,14 +213,14 @@
 					const db = firebase.firestore();
 					const docRef = db.collection("chatroom").doc("room" + id).collection("roominfo").doc("room" + id);
 					docRef.update({
-							users: firebase.firestore.FieldValue.arrayUnion(userid)
-						})
+						users: firebase.firestore.FieldValue.arrayUnion(userid)
+					})
 						.then(function() {
-							console.log("Document successfully written!");
-						})
+						console.log("Document successfully written!");
+					})
 						.catch(function(error) {
-							console.error("Error writing document: ", error);
-						});
+						console.error("Error writing document: ", error);
+					});
 
 					location.href = "http://localhost/SS2ATouronnomori/discussion.html?&&room" + id;
 				}

@@ -33,59 +33,9 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 	<script>
 		var uname;
 		var userid;
-		firebase.auth().onAuthStateChanged((user) => {
-			let logout = document.getElementById("logout");
-
-			//-----------------------------------
-			// ログインチェック
-			//-----------------------------------
-			if (!user) {
-				showMessage('Not Login', 'ログインしていません');
-				logout.classList.add("hide");
-				window.location.href = 'login.html';
-				return (false);
-			}
-
-			//-----------------------------------
-			// ログイン者への処理
-			//-----------------------------------
-			// ログインメッセージ
-			showMessage(`ログイン中 : ${user.displayName}さん`);
-			console.log(user);
-
-			//unameにユーザー名表示
-			uname = user.displayName;
-			document.querySelector('#uname').innerText = uname;
-
-			userid = user.uid;
-			console.log(userid);
-
-			// ログアウトボタンを表示
-			logout.classList.remove("hide");
-
-			// ログアウトボタンを押下
-			logout.addEventListener("click", () => {
-				firebase.auth().signOut().then(() => {
-						console.log("ログアウトしました");
-
-						//アラートを表示
-						window.alert('ログアウトしました。またきてね');
-						//OKでログイン画面へ遷移
-						window.location.href = 'login.html'
-					})
-					.catch((error) => {
-						console.log(`ログアウト時にエラーが発生しました (${error})`);
-					});
-			});
-		});
-		/**
-		 * メッセージ表示
-		 **/
-		function showMessage(msg) {
-			document.querySelector('#info').innerText = msg;
-		}
-
 	</script>
+
+	<script src="js/auth.js"></script>
 
 	<!--参加ユーザーの表示-->
 	<script>
