@@ -1,0 +1,157 @@
+
+<body>
+    <style>
+    
+        * {
+  box-sizing: border-box
+}
+.l-container {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+.wrapper {
+  padding: 20px 0;
+}
+.title {
+  margin-top: 0;
+  text-align: center;
+  color: #2196f3;
+  font-size: 25px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+}
+.grid {
+  .grid__inner {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -13px;
+  }
+  .grid__item {
+    width: 50%;
+    padding: 13px;
+  }
+}
+.count {
+  position: relative;
+  padding: 15px 0;
+  cursor: pointer;
+  border: 1px solid #d0cfcf;
+  border-radius: 6px;
+  background-color: #fff;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+.count__name {
+  display: block;
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 0;
+  line-height: 1;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+.count__num {
+  margin-top: 10px;
+  margin-bottom: 0;
+  line-height: 1;
+  color: #2196f5;
+  text-align: center;
+  font-size: 45px;
+  font-weight: bold;
+}
+
+.layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, .5);
+  opacity: 0;
+  transition: opacity .5s;
+  &.is-show {
+    opacity: 1;
+  }
+}
+.layer__loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+}
+.layer__count-stop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #2196f5;
+  font-size: 40px;
+  font-weight: bold;
+  white-space: nowrap;
+  &.layer__count-stop--screen {
+    font-size: 140px;
+  }
+}
+.dn {
+  display: none;
+}
+    </style>
+<div class="wrapper">
+  <div class="l-container">
+    <h2 class="title">ìäï[âÊñ </h2>
+    <div class="grid">
+      <div class="grid__inner">
+        <div class="grid__item">
+          <div class="js-post count" data-initial="hatsushi">
+            <p class="count__name js-name-hatsushi">é^ê¨</p>
+            <p class="count__num js-count js-count-hatsushi">0</p>
+          </div>
+        </div>
+        <div class="grid__item">
+          <div class="js-post count" data-initial="masakuni">
+            <p class="count__name js-name-masakuni">îΩëŒ</p>
+            <p class="count__num js-count js-count-masakuni">0</p>
+          </div>
+        </div>
+       
+     
+    </div>
+  </div>
+</div>
+<div class="layer js-layer dn">
+    <img class="layer__loading js-layer-loading dn" src="https://lig824.github.io/event/public/assets/images/loading.gif" alt="">
+  </div>
+    
+    
+<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+    
+    <script>
+     var firebaseConfig = {  //???????
+    apiKey: "AIzaSyCIOFVZs74nlVd3dpAlR_bOQOjUltmr2cw",
+    authDomain: "s192003auth.firebaseapp.com",
+    databaseURL: "https://s192003auth.firebaseio.com",
+    projectId: "s192003auth",
+    storageBucket: "s192003auth.appspot.com",
+    messagingSenderId: "717562886212",
+    appId: "1:717562886212:web:3336182bbeee7dd3772411",
+    measurementId: "G-8YEMSLV3YR"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js">
+        
+    </script>
+    
+    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+
+<!-- ???????? -->
+    <script src="index.js"></script>
