@@ -1,0 +1,129 @@
+<head>
+	<meta charset="utf-8">
+	<title>定刻処理用</title>
+</head>
+
+<body>
+	<div>
+		<input type="button" id="run_btn" value="削除実行" onclick="delete_btn()">
+	</div>
+
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
+	<script src="js/config.js"></script>
+	<body>
+		<script language="javascript" type="text/javascript">
+
+			
+			
+			const db = firebase.firestore();
+			const docRef = db.collection("chatroom").doc("room1");
+			
+			const docOdaiRef = db.collection("odai");
+			
+			var LIST = [];
+			var odaiLIST = [];
+			
+			docRef.collection("messages").get().then((querySnapshot) => {
+				var buff = [];
+				querySnapshot.forEach((doc) => {
+
+					buff.push(doc.id);
+				});
+
+				LIST = buff;
+				console.log(LIST);
+			})
+				.catch((error)=>{
+				console.log(`データの取得に失敗しました (${error})`);
+			});
+			
+			
+			docOdaiRef.get().then((querySnapshot) => {
+				var buff2 = [];
+				querySnapshot.forEach((doc) => {
+					buff2.push(doc.id);
+				});
+
+				odaiLIST = buff2;
+				console.log(odaiLIST);
+			})
+				.catch((error)=>{
+				console.log(`データの取得に失敗しました (${error})`);
+			});
+			
+			
+			// コールバックで呼ばれる関数
+			function funcdelete(room){
+				
+				docRef.collection("roominfo").doc("room1").delete().then(function() {
+					console.log("roominfoを削除しました");
+					set(room);
+				})
+					.catch((error) => {
+					console.log(`削除に失敗しました (${error})`);
+				});
+				
+				if(LIST.length === 0)
+					return(true);
+				
+				console.log(LIST.length)
+				
+				var len = LIST.length;
+				
+				for(i=0;i<len;i++){
+					docRef.collection("messages").doc(LIST.pop()).delete().then(function() {
+						console.log("messagesを全件削除しました");
+						
+					})
+						.catch((error) => {
+						console.log(`削除に失敗しました (${error})`);
+					});
+				};
+				
+				
+				
+				
+			}
+
+			// コールバックを呼ぶ関数
+			function delete1(room,callback){
+				callback(room);
+			}
+			// ボタンを押した時に呼ばれる関数
+			function delete_btn(){
+				delete1('room2',funcdelete)
+			}
+			
+			
+			function set(room){
+				
+				var docRefOdaiSet = db.collection("chatroom").doc(room).collection("roominfo").doc(doc.id);
+				console.log(odaiLIST)
+				var kimeta = odaiLIST[Math.floor(Math.random() * odaiLIST.length)]
+				
+				console.log(kimeta);
+				
+				//	odai/kimetaをget
+				//	chatroom/roonNo/roominfo/roonNoにaddかset
+				
+				
+				docRefOdaiSet.add({
+					theme: doc.data()["theme"],
+					users: doc.data()["users"]
+				})
+					.then(function(docRef) {
+					console.log("Document written with ID: ", docRef.id);
+				})
+					.catch(function(error) {
+					console.error("Error adding document: ", error);
+			});
+				
+				
+			}
+		
+			
+		</script>
+
+</body>
