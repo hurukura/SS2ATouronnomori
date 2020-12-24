@@ -165,9 +165,18 @@
 			docRef.get().then(function(doc) {
 				if (doc.exists) {
 					console.log("Document data:", doc.data());
-					a_user = Object.entries(doc.data().users);
-					c = Object.entries(doc.data().users).length;
-					console.log(c);
+					
+					// 参加ユーザーが０の時
+					if(doc.data().users != undefined){
+						a_user = Object.entries(doc.data().users);
+						c = Object.entries(doc.data().users).length;
+						console.log(c);
+					}else{
+						a_user = "";
+						c = 0;
+					}
+					
+					
 					discussion_go(id, userid, c, a_user);
 				} else {
 					console.log("No such document!");
@@ -211,7 +220,9 @@
 
 					//ユーザーIDをFirestoreに追加
 					const db = firebase.firestore();
+					
 					const docRef = db.collection("chatroom").doc("room" + id).collection("roominfo").doc("room" + id);
+					
 					docRef.update({
 						users: firebase.firestore.FieldValue.arrayUnion(userid)
 					})
@@ -222,7 +233,7 @@
 						console.error("Error writing document: ", error);
 					});
 
-					location.href = "http://localhost/SS2ATouronnomori/discussion.html?&&room" + id;
+//					location.href = "http://localhost/SS2ATouronnomori/discussion.html?&&room" + id;
 				}
 			} else {
 				ret = confirm("ルームは満員です");
@@ -251,7 +262,9 @@
 					console.log("Document data:", doc.data());
 					var room = "room1";
 					var count = "count1";
+					
 					addlog(doc.data(), room, count);
+				
 				} else {
 					console.log("No such document!");
 				}
@@ -372,12 +385,23 @@
 
 		//ルーム情報を表示
 		function addlog(data, room, count) {
+			
 			var str = data.theme;
 			console.log(typeof str);
-			var cnt = Object.entries(data.users);
-			console.log(cnt.length);
+			
+			if(data.users == undefined){
+				
+				console.log("data.usersはundefinedです")
+				var cntnone = 0;
+				document.querySelector(`#${count}`).innerText = cntnone;
+				
+			}else{
+				console.log("data.usersはundefinedではありません")
+				var cnt = Object.entries(data.users);
+				console.log(cnt.length);
+				document.querySelector(`#${count}`).innerText = String(cnt.length); //参加人数
+			}
 			document.querySelector(`#${room}`).innerText = str; //お題
-			document.querySelector(`#${count}`).innerText = String(cnt.length); //参加人数
 		}
 
 	</script>
