@@ -16,7 +16,8 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 	<div id="info"></div>
 	<form>
 		<button type="button" id="logout" class="hide">ログアウト</button>
-		<h1>討論の杜</h1>
+		<a href="home.html">トップへ</a>
+		<h1　id="toptxt">討論の杜</h1>
 	</form>
 
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
@@ -24,12 +25,19 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
 
 	<script src="js/config.js"></script>
-<!--	<script src="js/auth.js"></script>-->
+	<!--	<script src="js/auth.js"></script>-->
 	
+	<style>
+		.lb1,lb2{
+			font-size: nomal-size;
+		}
+	</style>
+
+
 	<script>
 		var userid;
 		var uname;
-		
+
 		firebase.auth().onAuthStateChanged((user) => {
 			let logout = document.getElementById("logout");
 
@@ -40,11 +48,11 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			//-----------------------------------
 			if (!user) {
 
-				if(wel){
+				if (wel) {
 					//welcomがある
 					showMessage('Not Login', 'ログインしていません');
 
-				}else{
+				} else {
 					//welcom がない（infoだけ）
 					showMessage_2('ログインしていません');
 
@@ -59,19 +67,19 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			// ログイン者への処理
 			//-----------------------------------
 			// ログインメッセージ
-			if(wel){
+			if (wel) {
 				//welcomがある
 				showMessage('ようこそ！', `ログイン中 : ${user.displayName}さん`);
 
-			}else{
+			} else {
 				//welcomがない（infoだけ）
 				showMessage_2(`ログイン中 : ${user.displayName}さん`);
 			}
 			uname = user.displayName
-			console.log("current : "+uname);
+			console.log("current : " + uname);
 
 			userid = user.uid;
-			console.log("current : "+userid);
+			console.log("current : " + userid);
 
 			// ログアウトボタンを表示
 			logout.classList.remove("hide");
@@ -79,16 +87,16 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			// ログアウトボタンを押下
 			logout.addEventListener("click", () => {
 				firebase.auth().signOut().then(() => {
-					console.log("ログアウトしました");
+						console.log("ログアウトしました");
 
-					//アラートを表示
-					window.alert('ログアウトしました。またきてね');
-					//OKでログイン画面へ遷移
-					window.location.href = 'login.html'
-				})
+						//アラートを表示
+						window.alert('ログアウトしました。またきてね');
+						//OKでログイン画面へ遷移
+						window.location.href = 'login.html'
+					})
 					.catch((error) => {
-					console.log(`ログアウト時にエラーが発生しました (${error})`);
-				});
+						console.log(`ログアウト時にエラーが発生しました (${error})`);
+					});
 			});
 		});
 		/**
@@ -101,7 +109,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			document.querySelector('#info').innerText = msg;
 		}
 		//welcomがない（infoだけ）
-		function showMessage_2(msg){
+		function showMessage_2(msg) {
 			console.log("welocom無");
 			document.querySelector('#info').innerText = msg;
 		}
@@ -135,8 +143,10 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		<div id="bms_send">
 			<textarea id="bms_send_message"></textarea>
 			<div id="radio">
-				<input type="radio" name="flag" value="0">賛成
-				<br><input type="radio" name="flag" value="1">反対
+
+				<input type="radio" name="flag" value="0" id="rd1" checked><label for="rd1" id="lb1"></label>
+				<br>
+				<input type="radio" name="flag" value="1" id="rd2"><label for="rd2" id="lb2"></label>
 			</div>
 			<div id="bms_send_btn">送信</div>
 		</div>
@@ -196,6 +206,92 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			});
 		});
 
+	</script>
+	<script>
+		/**
+		 * お題情報を取得
+		 **/
+		
+		var themeName; //お題のドキュメント名
+
+		var themes = []; //お題をランダム取得するための配列
+
+		var theme1; //お題の中１と２
+		var theme2;
+
+		
+		//---------------------------------------
+		// roomのお題を取得する
+		//---------------------------------------
+
+		var docRoominfoRef = db.collection("chatroom").doc(roomid).collection("roominfo").doc(roomid);
+
+		docRoominfoRef.get().then((doc) => {
+
+				console.log("theme : ", doc.data()["theme"]);
+
+				themeName = doc.data()["theme"];
+
+			//お題をもってgetファンクションへ
+				get(themeName);
+
+			})
+			.catch((error) => {
+				console.log(`データを取得できませんでした (${error})`);
+			});
+		
+		//---------------------------------------
+		// get ファンクション 
+		// odaiコレクションから1と2をgetする
+		//---------------------------------------
+
+		function get(theme) {
+			var docOdaiRef = db.collection("odai").doc(theme);
+
+			docOdaiRef.get().then((doc) => {
+
+					console.log("theme 1 : ", doc.data()["1"]);
+					console.log("theme 2 : ", doc.data()["2"]);
+
+					theme1 = doc.data()["1"];
+					theme2 = doc.data()["2"];
+
+				// getした1と2の値をもってsetOneTwoへ
+					setOneTwo(theme1, theme2);
+
+				})
+				.catch((error) => {
+					console.log(`データを取得できませんでした (${error})`);
+				});
+
+
+
+		}
+		//---------------------------------------
+		// setOneTwo ファンクション
+		//持ってきた１と２の値をラジオボタンのラベルにセットする
+		//---------------------------------------
+
+		function setOneTwo(one, two) {
+			var lb1 = document.querySelector('#lb1');
+			
+			var lb2 = document.querySelector('#lb2');
+
+			console.log(one.length);
+			
+			//もし文字数が3文字以上ならフォントサイズを5pxに
+			if (one.length >= 3) {
+				lb1.style.fontSize = "5px";
+				lb2.style.fontSize = "5px";
+		}
+			
+			//ここでセット
+		lb1.innerText = one;
+		lb2.innerText = two;
+		}
+
+
+
 		/**
 		 * 送信ボタン押下
 		 **/
@@ -210,7 +306,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				return (false);
 			}
 			// メッセージをfirestoreへ送信
-			
+
 			messagesRef.add({
 					name: uname,
 					msg: msg,
