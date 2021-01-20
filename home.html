@@ -4,18 +4,16 @@
 
 <head>
 	<meta charset="utf-8">
-<!--    スマホ画面サイズ-->
+<!--    スマホ用画面-->
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-   <link rel="stylesheet" href="css/c_home.css" media="screen and (max-width:800px)">
+    <link rel="stylesheet" href="css/c_home.css" media="screen and (max-width:800px)">
     <link rel="stylesheet" href="css/c_home.css" media="screen and (max-width:480px)">
     <link rel="stylesheet" href="css/c_home.css" media="screen and (max-width:0px)">
 
 	
-    
+<!--    CSS関連-->
     <link rel="stylesheet" href="css/c_home.css">
-	
 	<link rel="stylesheet" href="css/all.css">
-	
 	<link rel="manifest" href="manifest.json">
 	
 	
@@ -61,7 +59,7 @@
 		<form>
 			<button type="button" id="logout" class="hide">ログアウト</button>
 		</form>
-	</div> <!--login-->
+	</div> 
 		<h1 id="toptxt" onclick="gohome()" ><img src="images/touron.png" width="320" height="320"></h1>
 
 		<script>
@@ -74,14 +72,19 @@
 				
 		
 		<h3 style="text-align: center">現在行われている討論</h3>
-		<!-- <div id="maintable"></div>-->
+		
 		<table class="discussion_table" id="roomtable" border="1" frame="void" style="margin-left: auto;margin-right: auto">
+            
+            
 			<tr>
 				<th>No.</th>
 				<th>お題</th>
 				<th>人数</th>
 				<th>参加/観戦</th>
 			</tr>
+            
+<!--            ルームNo.1-->
+<!--            参加ボタンでトーク画面　観戦ボタンでトーク観戦画面-->
 			<tr>
 				<td align='center'>1</td>
 				<td align='center'>
@@ -92,6 +95,7 @@
 				</td>
 				<td align='center'><input type='button' name='chatroom' onclick='discussion(1,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(1)' value='観戦' /></td>
 			</tr>
+<!--            ルームNo.2-->
 			<tr>
 				<td align='center'>2</td>
 				<td align='center'>
@@ -102,6 +106,7 @@
 				</td>
 				<td align='center'><input type='button' name='chatroom' onclick='discussion(2,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(2)' value='観戦' /></td>
 			</tr>
+<!--            ルームNo.3-->
 			<tr>
 				<td align='center'>3</td>
 				<td align='center'>
@@ -112,6 +117,7 @@
 				</td>
 				<td align='center'><input type='button' name='chatroom' onclick='discussion(3,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(3)' value='観戦' /></td>
 			</tr>
+<!--            ルームNo.4-->
 			<tr>
 				<td align='center'>4</td>
 				<td align='center'>
@@ -122,6 +128,7 @@
 				</td>
 				<td align='center'><input type='button' name='chatroom' onclick='discussion(4,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(4)' value='観戦' /></td>
 			</tr>
+<!--            ルームNo.5-->
 			<tr>
 				<td align='center'>5</td>
 				<td align='center'>
@@ -132,6 +139,7 @@
 				</td>
 				<td align='center'><input type='button' name='chatroom' onclick='discussion(5,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(5)' value='観戦' /></td>
 			</tr>
+<!--            ルームNo.6-->
 			<tr>
 				<td align='center'>6</td>
 				<td align='center'>
@@ -142,6 +150,7 @@
 				</td>
 				<td align='center'><input type='button' name='chatroom' onclick='discussion(6,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(6)' value='観戦' /></td>
 			</tr>
+<!--            ルームNo.7-->
 			<tr>
 				<td align='center'>7</td>
 				<td align='center'>
@@ -152,6 +161,7 @@
 				</td>
 				<td align='center'><input type='button' name='chatroom' onclick='discussion(7,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(7)' value='観戦' /></td>
 			</tr>
+<!--            ルームNo.8-->
 			<tr>
 				<td align='center'>8</td>
 				<td align='center'>
@@ -162,6 +172,7 @@
 				</td>
 				<td align='center'><input type='button' name='chatroom' onclick='discussion(8,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(8)' value='観戦' /></td>
 			</tr>
+<!--            ルームNo.9-->
 			<tr>
 				<td align='center'>9</td>
 				<td align='center'>
@@ -172,6 +183,7 @@
 				</td>
 				<td align='center'><input type='button' name='chatroom' onclick='discussion(9,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(9)' value='観戦' /></td>
 			</tr>
+<!--            ルームNo.10-->
 			<tr>
 				<td align='center'>10</td>
 				<td align='center'>
@@ -227,6 +239,7 @@
 						//OKでログイン画面へ遷移
 						window.location.href = 'login.html'
 					})
+                       //エラー時の処理
 					.catch((error) => {
 						console.log(`ログアウト時にエラーが発生しました (${error})`);
 					});
@@ -438,8 +451,10 @@
 						break;
 				}
 			}
-			if (counter < 5 || user0 == userid || user1 == userid || user2 == userid || user3 == userid || user4 == userid) { //人数に空きがある場合又はすでに参加している場合
-				ret = confirm("ルーム" + id + "に移動します");
+            
+			if (counter < 5 || user0 == userid || user1 == userid || user2 == userid || user3 == userid || user4 == userid) { 
+				//人数に空きがある場合又はすでに参加している場合
+                ret = confirm("ルーム" + id + "に移動します");
 				if (ret == true) {
 					const userRef = db.collection("chatroom").doc("room" + id).collection("users").doc(userid);
 					userRef.set({
@@ -464,8 +479,8 @@
 				location.href = "http://tri-s-web.catfood.jp/touronnomori/discussion.html?&&room" + id + "&&par"; //parパラメータを付与
 			}
 		}
-
-		function userAdd(id) {
+        //ユーザーの追加
+        function userAdd(id) {
 			//ユーザーIDをFirestoreに追加
 			const docRef = db.collection("chatroom").doc("room" + id);
 			console.log(userid);
@@ -481,6 +496,8 @@
 				});
 		}
 
+        
+        //設定画面への画面遷移
 		function go_setting(){
 			location.href = "http://tri-s-web.catfood.jp/touronnomori/acount_setting.html?" + userid;
 		}
