@@ -4,8 +4,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 -->
 <!DOCTYPE html>
 <html>
-
-
 <head>
 	<meta charset="utf-8">
 	<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
@@ -14,15 +12,13 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 	<title>討論の杜 | チャットルーム</title>
 	<link rel="manifest" href="manifest.json">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	
-
 </head>
 
 <body>
 
 	<!--    Service Workerの読み込み -->
-
 	<script src="js/app.js"></script>
+
 
 	<div id="login">
 		<div id="info"></div>
@@ -74,6 +70,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		var userid;
 		var uname;
 
+		//firebaseAuthと連携しログインチェック
 		firebase.auth().onAuthStateChanged((user) => {
 			let logout = document.getElementById("logout");
 
@@ -151,7 +148,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			console.log("welocom無");
 			document.querySelector('#info').innerHTML = msg;
 		}
-
 	</script>
 
 	<!--参加ユーザーの表示-->
@@ -160,13 +156,11 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		var query = location.search;
 		var value = query.split('&&');
 		var a = new Array();
-
 		console.log("value = " + value);
 
 		//ルームidの定義
 		var roomid = value[1];
 		console.log("roomid = " + roomid);
-
 	</script>
 
 	<!-- 発言が表示される領域 -->
@@ -199,7 +193,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		var del = location.search.split('&&');
 		console.log(del);
 
-
 		// 要素を取得
 		if (del[2] == 'par') {
 			let id1 = document.getElementById('form1');
@@ -208,8 +201,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			// none に設定して非表示
 			id1.style.display = 'none';
 		}
-		/////
-
 
 		//---------------------------------------
 		// Firestoreの準備
@@ -218,17 +209,19 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		//			var db = firebase.firestore();
 
 		// チャットルームのリファレンス取得
-		//    ★home.phpで選択したルームIDを ここ↓  に入れる
+		//del[1]にroom1~10のどれかが入っている
 		console.log(del[1]);
 		var db = firebase.firestore();
 		var messagesRef;
-		if (del[1].length < 7) {
+		
+		//del[1].lengthが7より小さい(true)ときは当日のルーム、7より大きい(false)時は過去のルーム
+		if (del[1].length < 7) {//当日
 			messagesRef = db.collection("chatroom").doc(del[1]).collection("messages");
 
 			/**
 			 * 同期処理
 			 **/
-			messagesRef.orderBy("date", "asc").limit(20).onSnapshot((snapshot) => {
+			messagesRef.orderBy("date", "asc").limit(1000).onSnapshot((snapshot) => {
 				snapshot.docChanges().forEach((change) => {
 					// 追加
 					if (change.type === 'added') {
@@ -244,13 +237,14 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 					}
 				});
 			});
-		} else {
+		} else {//過去
+			//過去のルームなので投稿フォーム非表示
 			document.getElementById("form1").style.visibility = 'hidden';
 			messagesRef = db.collection("results").doc(del[1]).collection("messages");
 			/**
 			 * 同期処理
 			 **/
-			messagesRef.orderBy("date", "asc").limit(20).onSnapshot((snapshot) => {
+			messagesRef.orderBy("date", "asc").limit(1000).onSnapshot((snapshot) => {
 				snapshot.docChanges().forEach((change) => {
 					// 追加
 					if (change.type === 'added') {
@@ -267,7 +261,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				});
 			});
 		}
-
 	</script>
 	<script>
 		/**
@@ -275,23 +268,20 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		 **/
 
 		var themeName; //お題のドキュメント名
-
 		var themes = []; //お題をランダム取得するための配列
-
 		var theme1; //お題の中１と２
 		var theme2;
 
-
-		const docRef = db.collection("chatroom").doc(roomid);
-			docRef.get().then(function(doc) {
-				if (doc.exists) {
-					a_user = Object.entries(doc.data().users).length;
-				} else {
-					console.log("No such document!");
-				}
-			}).catch(function(error) {
-				console.log("Error getting document:", error);
-			});
+		// const docRef = db.collection("chatroom").doc(roomid);
+		// 	docRef.get().then(function(doc) {
+		// 		if (doc.exists) {
+		// 			a_user = Object.entries(doc.data().users).length;
+		// 		} else {
+		// 			console.log("No such document!");
+		// 		}
+		// 	}).catch(function(error) {
+		// 		console.log("Error getting document:", error);
+		// 	});
 		
 		//---------------------------------------
 		// roomのお題を取得する
@@ -303,9 +293,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			docRoominfoRef.get().then((doc) => {
 
 					console.log("theme : ", doc.data()["theme"]);
-
 					themeName = doc.data()["theme"];
-
 					//お題をもってgetファンクションへ
 					get(themeName);
 
@@ -313,6 +301,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				.catch((error) => {
 					console.log(`データを取得できませんでした (${error})`);
 				});
+				//参加人数表示
 			docRoominfoRef.get().then(function(doc) {
 				if (doc.exists) {
 					var usersLength = Object.entries(doc.data().users).length;
@@ -323,14 +312,12 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			}).catch(function(error) {
 				console.log("Error getting document:", error);
 			});
-		} else {
+		} else {//過去のルーム
 			docRoominfoRef = db.collection("results").doc(roomid);
 			docRoominfoRef.get().then((doc) => {
 
 					console.log("theme : ", doc.data()["theme"]);
-
 					themeName = doc.data()["theme"];
-
 					//お題をもってgetファンクションへ
 					get(themeName);
 
@@ -338,6 +325,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				.catch((error) => {
 					console.log(`データを取得できませんでした (${error})`);
 				});
+				//参加人数表示
 			docRoominfoRef.get().then(function(doc) {
 				if (doc.exists) {
 					var usersLength = Object.entries(doc.data().users).length;
@@ -353,7 +341,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		// get ファンクション 
 		// odaiコレクションから1と2をgetする
 		//---------------------------------------
-
 		function get(theme) {
 			var docOdaiRef = db.collection("odai").doc(theme);
 
@@ -382,9 +369,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 
 		function setOneTwo(one, two) {
 			var lb1 = document.querySelector('#lb1');
-
 			var lb2 = document.querySelector('#lb2');
-
 			console.log(one.length);
 
 			//もし文字数が3文字以上ならフォントサイズを5pxに
@@ -398,6 +383,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			lb2.innerText = two;
 		}
 		
+		//お題セット
 		function setTheme(theme){
 			var the = document.querySelector('#theme');
 			the.innerText = `お題 : ${theme}`;
@@ -409,13 +395,13 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		 **/
 		document.getElementById("bms_send_btn").addEventListener("click", () => {
 			let msg = document.getElementById("bms_send_message").value;
-			if (msg.length === 0) {
+			if (msg.length === 0) {//メッセージがない
 				return (false);
 			}
 			let flags = document.getElementsByName("flag");
 			let flag = 0;
 			for (var i = 0; i < flags.length; i++) {
-				if (flags[i].checked) {
+				if (flags[i].checked) {//flagが0(Aの意見)か1(Bの意見)
 					flag = flags[i].value;
 					break
 				}
@@ -425,7 +411,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				return (false);
 			}
 			// メッセージをfirestoreへ送信
-
 			messagesRef.add({
 					name: uname,
 					msg: msg,
@@ -438,6 +423,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 					msg.focus();
 					msg.value = "";
 				})
+				//投稿した意見のflagをusersに反映
 			usersFlag(flag);
 		});
 		// submitイベントは（いったん）無視する
@@ -445,9 +431,8 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			e.preventDefault();
 		});
 
-
+		//flagをusersに反映
 		function usersFlag(flag) {
-
 			var usersRef = db.collection("chatroom").doc(del[1]).collection("users").doc(userid);
 			usersRef.set({
 					flag: flag
@@ -464,21 +449,21 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		 */
 		function addLog(id, data) {
 			// 追加するHTMLを作成
-
-			if (data.name == uname) {
-				if (data.flag == 0) {
+			if (data.name == uname) {//自分の投稿はclass(bms_mine)を追加→色が緑になる
+				if (data.flag == 0) {//Aの意見なので右側に表示　class(bms_right)
 					var str = `<div class="bms_message bms_right bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 					console.log(data.id);
-				} else {
+				} else {//Bの意見なので左側に表示　class(bms_left)
 					var str = `<div class="bms_message bms_left bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				}
 			} else {
-				if (data.flag == 0) {
+				if (data.flag == 0) {//Aの意見なので右側に表示　class(bms_right)
 					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
-				} else {
+				} else {//Bの意見なので左側に表示　class(bms_left)
 					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				}
 			}
+			//作成したHTMLを追加
 			document.getElementById("bms_messages").innerHTML += str;
 		}
 
@@ -489,7 +474,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			let log = document.getElementById(id);
 			if (log !== null) {
 				log.innerText = `${data.name}: ${data.msg} (${getStrTime(data.date)})`;
-
 				if (data.flag == 0) {
 					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a><br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				} else {
@@ -523,11 +507,9 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 	</script>
 	<script>
 		'use strict';
-
+		//残り時間表示
 		function countdown(due) {
 			const now = new Date();
-
-
 			const rest = due.getTime() - now.getTime();
 			const sec = Math.floor(rest / 1000) % 60;
 			const min = Math.floor(rest / 1000 / 60) % 60;
@@ -556,6 +538,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			}
 		}
 
+		//毎秒更新
 		function refresh() {
 			setTimeout(recalc, 1000);
 		}
@@ -563,8 +546,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		recalc();
 	</script>
 
-
 	<script src="js/cron.js"></script>
 </body>
-
 </html>
