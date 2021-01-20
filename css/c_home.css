@@ -1,60 +1,213 @@
-.discussion_table tr:hover td {
-    background-color: #d9efff;
-    border-spacing: 8px 0px;
-
-}
-
-body {
-    background-image: url(images/background.jfif);
-}
-
+/*ホーム画面*/
 
 h1,
 h2 {
-    text-align: center;
-    font-family: "Century";
+	text-align: center;
+	font-family: "Century";
+	clear: both;
+}
+h1 {
+	margin: -30;
 }
 
-h2 {
-    margin-top: -30;
+h2{
+    font-size: 30px;
+}
+
+h3{
+    font-size: 30px;
+}
+
+/*テーブルデザイン*/
+
+.discussion_table {
+ width:100%;
+ table-layout: fixed;
+ border: none !important;
+ border-collapse: separate;
+ border-spacing: 0px 8px;
+}
+ 
+.discussion_table th {
+ border: none !important;
+}
+ 
+.discussion_table tbody td {
+   border: none !important;
+  background-color:#FFF9FF !important;
+  border-bottom: solid 2px #f9f9f9 !important;
+}
+ 
+/* ヘッダー */
+.discussion_table thead th {
+ font-weight: bold;
+ border-radius: 10px 10px 0px 0px;
+}
+
+/* フッター（比較表と色つけたとき用） */
+.discussion_table tfoot td {
+ border:none;
+ border-radius: 0 0 10px 10px;
+}
+ 
+ 
+/* ボディ項目 */
+.discussion_table tbody th {
+ background:#FFCC77;
+ font-weight: bold;
+ border-bottom: solid 2px #f9f9f9 !important;
+ line-height:4.5em;
+}
+ 
+/* フッター項目 */
+.discussion_table tfoot th {
+ background:none;
+ line-height:3em;
+ font-weight: bold;
 }
 
 
-h3 {
-    margin-top: 40;
-    font-size: 25;
+ 
+/* ボディデータ */
+.discussion_table tbody td {
+ text-align:center;
+}
+ 
+/* ヘッダー行　１列ごとの色変え */
+.discussion_table thead th:nth-child(1)  {
+ background:#81d4fa;
+}
+
+.discussion_table thead th:nth-child(2)  {
+ background: #FFBCFF;
+}
+.discussion_table thead th:nth-child(3)  {
+ background: #FFFFB2;
+}
+.discussion_table thead th:nth-child(4)  {
+ background: #C4FF89;
+}
+.discussion_table thead th:nth-child(5)  {
+ background: #FFB2D8;
+}
+ 
+/* 最終行のボーダーをなくす */
+.discussion_table tbody tr:last-child th,
+.discussion_table tbody tr:last-child td {
+ border-bottom:none !important;
 }
 
 
 
-#info{
-    text-align: right;
+
+
+
+/*（共通）　項目の多いテーブルの幅を調整*/
+@media (max-width: 767px) {
+ .col6t th,
+ .col6t td{
+ font-size:0.4em;
+ padding: 10px 0px;
+ }
+ .col5t th,
+ .col5t td{
+ font-size:0.5em;
+ padding: 10px 0px;
+ }
+ .col4t th,
+ .col4t td{
+ font-size:0.7em;
+ padding: 10px 5px;
+ }
+ .col3t th,
+ .col3t td{
+ font-size:0.8em;
+ padding: 10px 10px;
+ }
 }
 
-#logout {
-    float: right;
+.login {
+	float: right;
 }
 
-table {
-    margin: 5px auto;
-    /* 上下3px 左右auto */
-    padding: 15px;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 5px;
+/* スマホ調整 */
+@media (max-width: 800px) {
+  .discussion_table thead th,
+  .discussion_table tbody th {
+      padding:0;
+  }
+  .discussion_table tfoot td {
+  padding:0;
+  font-size:0.9em;
+  }
+.discussion_table tfoot td:nth-child(2) {
+   font-size:1em;
+  }
+  
 }
 
-th {
-    color: #fff;
-    background: #008000;
-    border-radius: 5px;
-    padding: 5px;
 
 
-}
+@media screen and(max-width: 480px) {
+	.discussion_table tr:hover td {
+		background-color: #d9efff;
+		border-spacing: 8px 0px;
+	}
 
-td {
-    padding: 20px;
-    border-radius: 5px;
-    background: white;
+	.hide:hover {
+		background-color: #d9efff;
+		border-spacing: 8px 0px;
+	}
+
+	h1,
+	h2 {
+		text-align: center;
+		font-family: "Century";
+		clear: both;
+	}
+
+	body {
+		background-image: url(./../images/background.jpg);
+        min-height:100vh;
+	}
+
+	h1 {
+		margin: -30;
+	}
+    
+/*    テーブルデザイン*/
+
+	table {
+        border-collapse: collapse;
+		margin: 5px auto;
+		padding: 15px;
+		border-collapse: separate;
+		border-spacing: 0;
+		border-radius: 5px;
+		width: 100%;
+		height: 250;
+        
+	}
+
+	th {
+		color: #fff;
+		background: #008000;
+		border-radius: 5px;
+		padding: 5px;
+        width: 50%;
+        position: sticky;
+        top: 0;
+	}
+
+	td {
+		padding: 10px;
+		border-radius: 5px;
+		background: white;
+	}
+
+	.login {
+		float: right;
+		text-align: right;
+	}
+    
 }

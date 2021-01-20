@@ -1,64 +1,228 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>討論の杜 | ユーザー設定</title>
+	<meta charset="utf-8">
+	<link rel="manifest" href="manifest.json">
+	<link rel="stylesheet" href="css/c_acount_setting.css">
+	<link rel="stylesheet" href="css/all.css">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>討論の杜 | ユーザー設定</title>
 </head>
 
 <body>
+	<!--    モジュール   -->
 
-    <!--    モジュール   -->
+	<!--    firebase    -->
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
+	<!--    firestoe    -->
+	<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
 
-    <!--    firebase    -->
-    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
-    <!--    firestoe    -->
-    <script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
+	<!--    設定読み込み   -->
+	<script src="js/config.js"></script>
 
-    <!--    設定読み込み   -->
-    <script src="js/config.js"></script>
+	<!--    Service Workerの読み込み -->
 
-    <!--    モジュールここまで   -->
+	<script src="js/auth.js"></script>
 
-    <div class="acount_setting">
-        <h1>ユーザーの設定</h1>
+	<script src="js/app.js"></script>
 
-        <form id="set">
+	<!--    モジュールここまで   -->
 
-            <p>
-                性別<br>
-                <input type="radio" name="seibetu_q" value="男性" 　checked>男性<br>
-                <input type="radio" name="seibetu_q" value="女性">女性<br>
-                <input type="radio" name="seibetu_q" 　value="その他">その他<br>
-            </p>
+	<div id="login">
+		<div id="info">aaaaa</div>
+		<form>
+			<button type="button" id="logout" class="hide">ログアウト</button>
+		</form>
+	</div>
 
-            <br>
+	<script>
+		function gohome() {
+			window.location.href = 'home.html';
+		}
 
-            <p>
-                年代<br>
-                <select name="nendai_q">
-                    <option>10代</option>
-                    <option>20代</option>
-                    <option>30代</option>
-                    <option>40代</option>
-                    <option>50代</option>
-                    <option>60代</option>
-                    <option>その他</option>
-                </select>
-            </p>
-            <br>
-            <button type="button" id="setting">設定する</button>
-        </form>
-    </div>
+	</script>
 
-    <a href="home.php">トップページへ</a>
-    <h2></h2>
-    <form>
-        <button type="button" id="logout" class="hide">ログアウト</button>
-    </form>
 
+	<div id="domannaka">
+
+		<h1 id="toptxt" onclick="gohome()"><img src="images/touron.png" width="320" height="320"></h1>
+
+
+		<h3>ユーザー設定</h3>
+
+		<form id="set">
+
+			<div id="k" class="setting">
+				名前<br>
+				<input type="text" id="namae_q">
+				<!--ダミーのテキストエリア-->
+				<input type="text" name="dummy" style="display:none;">
+			</div>
+			<br>
+			<div id="k" class="setting">
+				性別<br>
+				<input type="radio" name="seibetu_q" value="男性" 　checked>男性<br>
+				<input type="radio" name="seibetu_q" value="女性">女性<br>
+				<input type="radio" name="seibetu_q" value="その他">その他<br>
+			</div>
+			<br>
+			<div id="k" class="setting">
+				年代<br>
+				<select name="nendai_q">
+					<option>10代</option>
+					<option>20代</option>
+					<option>30代</option>
+					<option>40代</option>
+					<option>50代</option>
+					<option>60代</option>
+					<option>その他</option>
+				</select>
+			</div>
+			<br>
+			<a href="#" onclick="setting()" class="btn btn--green btn--cubic">設定する</a>
+		</form>
+	</div>
+	<!--domannaka-->
+
+	<script>
+		//firestore定義
+		const db = firebase.firestore();
+		var userId = location.search.substr(1);
+		console.log(userId);
+		const userRef = db.collection("users").doc(userId);
+		const docRef = db.collection("users");
+
+		//fireStoreから取得、表示
+		userRef.get().then(function(doc) {
+			if (doc.exists) {
+				console.log("Document data:", doc.data());
+				document.getElementById("namae_q").value = doc.data().username;
+				radioCheck(doc.data().seibetu);
+				selectNendai(doc.data().nendai);
+			} else {
+				console.log("No such document!");
+			}
+		}).catch(function(error) {
+			console.log("Error getting document:", error);
+		});
+
+		//取得した性別を表示
+		function radioCheck(value) {
+			var form = document.getElementById("set");
+			var radio_seibetu = form.seibetu_q;
+			for (let i = 0; i < radio_seibetu.length; i++) {
+				if (radio_seibetu[i].value == value) {
+					radio_seibetu[i].checked = true;
+				}
+			}
+		}
+
+		function selectNendai(value) {
+			var form = document.getElementById("set");
+			var radio_seibetu = form.nendai_q;
+			for (let i = 0; i < form.nendai_q.length; i++) {
+				if (radio_seibetu[i].value == value) {
+					radio_seibetu[i].selected = true;
+				}
+			}
+		}
+
+
+
+		// ---------------------------------
+		// 設定するボタンを押下
+		// ---------------------------------
+		function setting() {
+
+			//formを取得
+			var form = document.getElementById("set");
+
+			//text取得
+			var nameText = form.namae_q;
+			var u_name = nameText.value;
+			window.console.log(u_name);
+
+			//性別のラジオボタンを取得
+			var radioNodeList = form.seibetu_q;
+			var a = radioNodeList.value;
+			window.console.log(a);
+
+			var select = form.nendai_q;
+			var b = select.value;
+			window.console.log(b);
+
+			var userName = getUserName();
+			var userid = getUserId();
+			console.log(userid);
+
+			if (a != "" && b != "") {
+				var result = window.confirm(`${userName}さん、この内容でよろしいですか？`);
+			} else if (b != "") {
+				window.alert("性別を選択してください。");
+			} else {
+				window.alert("年代を選択してください。");
+			}
+
+
+
+			//アラートが「はい」のときの処理
+			if (result) {
+				db.collection("users").doc(userid).update({
+						//　ここにDBへの書き込みコード
+						username: u_name,
+						seibetu: a,
+						nendai: b,
+
+					})
+					.then(function() {
+						console.log("Document successfully written!");
+						location.href = "http://tri-s-web.catfood.jp/touronnomori/acount_info.html?uid=" + userid;
+						console.log("http://tri-s-web.catfood.jp/touronnomori/acount_info.html?uid=" + userid)
+					})
+					.catch(function(error) {
+						console.error("Error writing document: ", error);
+					});
+
+				var user = firebase.auth().currentUser;
+
+				user.updateProfile({
+					displayName: u_name
+				}).then(function() {
+					// Update successful.
+				}).catch(function(error) {
+					// An error happened.
+				});
+
+			}
+		}
+
+		// ------------------------
+		// ログアウトボタンを押下
+		// ------------------------
+		logout.addEventListener("click", () => {
+			firebase.auth().signOut().then(() => {
+					console.log("ログアウトしました");
+
+					//アラートを表示
+					window.alert('ログアウトしました。またきてね');
+					//OKでログイン画面へ遷移
+					window.location.href = 'login.html'
+				})
+				.catch((error) => {
+					console.log(`ログアウト時にエラーが発生しました (${error})`);
+				});
+		});
+
+		/**
+		 * メッセージ表示
+		 **/
+		function showMessage(title, msg) {
+			document.querySelector('h2').innerText = title;
+			document.querySelector('#info').innerText = msg;
+		}
+
+	</script>
 </body>
-
-<script src="js/auth.js"></script>
 
 </html>

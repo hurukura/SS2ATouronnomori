@@ -1,0 +1,51 @@
+h1:hover {
+	cursor: pointer;
+}
+
+h1{
+	clear: both;
+}
+
+body{
+	background-image: url(./../images/background.jpg);
+}
+#login {
+			float: right;
+		}
+
+.btn,
+a.btn,
+button.btn {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  position: relative;
+  display: inline-block;
+  padding: 1rem 4rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #212529;
+  border-radius: 0.5rem;
+}
+
+a.btn--green {
+  color: #fff;
+  background-color: #00a497;
+  border-bottom: 5px solid #008075;
+}
+
+a.btn--green:hover {
+  margin-top: 3px;
+  color: #fff;
+  background: #00a497;
+  border-bottom: 2px solid #008075;
+}

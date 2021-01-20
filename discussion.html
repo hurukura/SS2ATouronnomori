@@ -5,20 +5,46 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 <!DOCTYPE html>
 <html>
 
+
 <head>
 	<meta charset="utf-8">
+	<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/c_discussion.css">
-	<title>FireStore Chat</title>
+	<link rel="stylesheet" href="css/all.css">
+	<title>討論の杜 | チャットルーム</title>
+	<link rel="manifest" href="manifest.json">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	
 
 </head>
 
 <body>
-	<div id="info"></div>
-	<form>
-		<button type="button" id="logout" class="hide">ログアウト</button>
-		<a href="home.html">トップへ</a>
-		<h1　id="toptxt">討論の杜</h1>
-	</form>
+
+	<!--    Service Workerの読み込み -->
+
+	<script src="js/app.js"></script>
+
+	<div id="login">
+		<div id="info"></div>
+		<form>
+			<button type="button" id="logout" class="hide">ログアウト</button>
+		</form>
+	</div>
+	
+
+
+	<h1 id="toptxt" onclick="gohome()"><img src="images/touron.png" width="320" height="320"></h1>
+<!--	<div id="roominfo">お題 : <span id="theme"></span><br>残り時間 : <span id="timer"></span>	   参加人数 : <span id="users"></span>人</div>-->
+	
+	<div id="roominfo">
+		<h2 id="theme"></h2>
+		<div id="timer">残り時間 : </div>
+		<br>
+		<div id="users"></div>
+	</div>
+	
+	
+
 
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-firestore.js"></script>
@@ -26,15 +52,25 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 
 	<script src="js/config.js"></script>
 	<!--	<script src="js/auth.js"></script>-->
-	
+
+	<script>
+		function gohome() {
+			window.location.href = './home.html';
+		}
+
+	</script>
+
 	<style>
-		.lb1,lb2{
+		.lb1,
+		lb2 {
 			font-size: nomal-size;
 		}
+
 	</style>
 
 
 	<script>
+	
 		var userid;
 		var uname;
 
@@ -66,14 +102,16 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			//-----------------------------------
 			// ログイン者への処理
 			//-----------------------------------
+			var nameurl = `<a href='acount_info.html?uid=${user.uid}'>${user.displayName}</a>`;
+
 			// ログインメッセージ
 			if (wel) {
-				//welcomがある
-				showMessage('ようこそ！', `ログイン中 : ${user.displayName}さん`);
+				//welcomがある''
+				showMessage('ようこそ！', `ログイン中 : ${nameurl}さん`);
 
 			} else {
 				//welcomがない（infoだけ）
-				showMessage_2(`ログイン中 : ${user.displayName}さん`);
+				showMessage_2(`ログイン中 : ${nameurl}さん`);
 			}
 			uname = user.displayName
 			console.log("current : " + uname);
@@ -106,12 +144,12 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		function showMessage(title, msg) {
 			console.log("welocom有");
 			document.querySelector('#welcom').innerText = title;
-			document.querySelector('#info').innerText = msg;
+			document.querySelector('#info').innerHTML = msg;
 		}
 		//welcomがない（infoだけ）
 		function showMessage_2(msg) {
 			console.log("welocom無");
-			document.querySelector('#info').innerText = msg;
+			document.querySelector('#info').innerHTML = msg;
 		}
 
 	</script>
@@ -139,7 +177,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 
 	<!-- 入力フォーム -->
 	<form id="form1">
-		<div id="uname"></div>
 		<div id="bms_send">
 			<textarea id="bms_send_message"></textarea>
 			<div id="radio">
@@ -184,34 +221,59 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		//    ★home.phpで選択したルームIDを ここ↓  に入れる
 		console.log(del[1]);
 		var db = firebase.firestore();
-		var messagesRef = db.collection("chatroom").doc(del[1]).collection("messages");
+		var messagesRef;
+		if (del[1].length < 7) {
+			messagesRef = db.collection("chatroom").doc(del[1]).collection("messages");
 
-		/**
-		 * 同期処理
-		 **/
-		messagesRef.orderBy("date", "asc").limit(20).onSnapshot((snapshot) => {
-			snapshot.docChanges().forEach((change) => {
-				// 追加
-				if (change.type === 'added') {
-					addLog(change.doc.id, change.doc.data());
-				}
-				// 更新
-				else if (change.type === 'modified') {
-					modLog(change.doc.id, change.doc.data());
-				}
-				// 削除
-				else if (change.type === 'removed') {
-					removeLog(change.doc.id);
-				}
+			/**
+			 * 同期処理
+			 **/
+			messagesRef.orderBy("date", "asc").limit(20).onSnapshot((snapshot) => {
+				snapshot.docChanges().forEach((change) => {
+					// 追加
+					if (change.type === 'added') {
+						addLog(change.doc.id, change.doc.data());
+					}
+					// 更新
+					else if (change.type === 'modified') {
+						modLog(change.doc.id, change.doc.data());
+					}
+					// 削除
+					else if (change.type === 'removed') {
+						removeLog(change.doc.id);
+					}
+				});
 			});
-		});
+		} else {
+			document.getElementById("form1").style.visibility = 'hidden';
+			messagesRef = db.collection("results").doc(del[1]).collection("messages");
+			/**
+			 * 同期処理
+			 **/
+			messagesRef.orderBy("date", "asc").limit(20).onSnapshot((snapshot) => {
+				snapshot.docChanges().forEach((change) => {
+					// 追加
+					if (change.type === 'added') {
+						addLog(change.doc.id, change.doc.data());
+					}
+					// 更新
+					else if (change.type === 'modified') {
+						modLog(change.doc.id, change.doc.data());
+					}
+					// 削除
+					else if (change.type === 'removed') {
+						removeLog(change.doc.id);
+					}
+				});
+			});
+		}
 
 	</script>
 	<script>
 		/**
 		 * お題情報を取得
 		 **/
-		
+
 		var themeName; //お題のドキュメント名
 
 		var themes = []; //お題をランダム取得するための配列
@@ -219,27 +281,74 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		var theme1; //お題の中１と２
 		var theme2;
 
+
+		const docRef = db.collection("chatroom").doc(roomid);
+			docRef.get().then(function(doc) {
+				if (doc.exists) {
+					a_user = Object.entries(doc.data().users).length;
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
 		
 		//---------------------------------------
 		// roomのお題を取得する
 		//---------------------------------------
 
-		var docRoominfoRef = db.collection("chatroom").doc(roomid).collection("roominfo").doc(roomid);
+		var docRoominfoRef;
+		if (del[1].length < 7) { //当日のルーム
+			docRoominfoRef = db.collection("chatroom").doc(roomid);
+			docRoominfoRef.get().then((doc) => {
 
-		docRoominfoRef.get().then((doc) => {
+					console.log("theme : ", doc.data()["theme"]);
 
-				console.log("theme : ", doc.data()["theme"]);
+					themeName = doc.data()["theme"];
 
-				themeName = doc.data()["theme"];
+					//お題をもってgetファンクションへ
+					get(themeName);
 
-			//お題をもってgetファンクションへ
-				get(themeName);
-
-			})
-			.catch((error) => {
-				console.log(`データを取得できませんでした (${error})`);
+				})
+				.catch((error) => {
+					console.log(`データを取得できませんでした (${error})`);
+				});
+			docRoominfoRef.get().then(function(doc) {
+				if (doc.exists) {
+					var usersLength = Object.entries(doc.data().users).length;
+					document.querySelector('#users').innerText = `参加人数 : ${usersLength}`;
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
 			});
-		
+		} else {
+			docRoominfoRef = db.collection("results").doc(roomid);
+			docRoominfoRef.get().then((doc) => {
+
+					console.log("theme : ", doc.data()["theme"]);
+
+					themeName = doc.data()["theme"];
+
+					//お題をもってgetファンクションへ
+					get(themeName);
+
+				})
+				.catch((error) => {
+					console.log(`データを取得できませんでした (${error})`);
+				});
+			docRoominfoRef.get().then(function(doc) {
+				if (doc.exists) {
+					var usersLength = Object.entries(doc.data().users).length;
+					document.querySelector('#users').innerText = `参加人数 : ${usersLength}`;
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+		}
 		//---------------------------------------
 		// get ファンクション 
 		// odaiコレクションから1と2をgetする
@@ -256,7 +365,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 					theme1 = doc.data()["1"];
 					theme2 = doc.data()["2"];
 
-				// getした1と2の値をもってsetOneTwoへ
+					// getした1と2の値をもってsetOneTwoへ
 					setOneTwo(theme1, theme2);
 
 				})
@@ -264,8 +373,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 					console.log(`データを取得できませんでした (${error})`);
 				});
 
-
-
+			setTheme(theme);
 		}
 		//---------------------------------------
 		// setOneTwo ファンクション
@@ -274,22 +382,26 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 
 		function setOneTwo(one, two) {
 			var lb1 = document.querySelector('#lb1');
-			
+
 			var lb2 = document.querySelector('#lb2');
 
 			console.log(one.length);
-			
+
 			//もし文字数が3文字以上ならフォントサイズを5pxに
 			if (one.length >= 3) {
 				lb1.style.fontSize = "5px";
 				lb2.style.fontSize = "5px";
-		}
-			
-			//ここでセット
-		lb1.innerText = one;
-		lb2.innerText = two;
-		}
+			}
 
+			//ここでセット
+			lb1.innerText = one;
+			lb2.innerText = two;
+		}
+		
+		function setTheme(theme){
+			var the = document.querySelector('#theme');
+			the.innerText = `お題 : ${theme}`;
+		}
 
 
 		/**
@@ -300,7 +412,14 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			if (msg.length === 0) {
 				return (false);
 			}
-			let flag = document.getElementById("form1").flag.value;
+			let flags = document.getElementsByName("flag");
+			let flag = 0;
+			for (var i = 0; i < flags.length; i++) {
+				if (flags[i].checked) {
+					flag = flags[i].value;
+					break
+				}
+			}
 			if (flag.length === 0) {
 				console.log(flag);
 				return (false);
@@ -319,6 +438,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 					msg.focus();
 					msg.value = "";
 				})
+			usersFlag(flag);
 		});
 		// submitイベントは（いったん）無視する
 		document.getElementById("form1").addEventListener("submit", (e) => {
@@ -326,6 +446,19 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		});
 
 
+		function usersFlag(flag) {
+
+			var usersRef = db.collection("chatroom").doc(del[1]).collection("users").doc(userid);
+			usersRef.set({
+					flag: flag
+				})
+				.then(function(doc11) {
+					console.log("flagが変わりました");
+				})
+				.catch(function(error) {
+					console.error("Error adding document: ", error);
+				});
+		}
 		/**
 		 * ログに追加
 		 */
@@ -334,16 +467,16 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 
 			if (data.name == uname) {
 				if (data.flag == 0) {
-					var str = `<div class="bms_message bms_right bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_right bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 					console.log(data.id);
 				} else {
-					var str = `<div class="bms_message bms_left bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_left bms_mine"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				}
 			} else {
 				if (data.flag == 0) {
-					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				} else {
-					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_name"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a></div><div class="bms_message_text">${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				}
 			}
 			document.getElementById("bms_messages").innerHTML += str;
@@ -358,9 +491,9 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				log.innerText = `${data.name}: ${data.msg} (${getStrTime(data.date)})`;
 
 				if (data.flag == 0) {
-					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text"><a href="acount_info.html?uid=${data.id}">${data.name}</a><br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a><br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				} else {
-					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text"><a href="acount_info.html?uid=${data.id}">${data.name}</a><br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
+					var str = `<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text"><a href="acount_info.html?uid=${data.id}" id ="mes">${data.name}</a><br><br>${data.msg} </div></div></div></div><div class="bms_clear"></div>`;
 				}
 			}
 		}
@@ -387,8 +520,51 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				("0" + t.getMinutes()).slice(-2)
 			);
 		}
-
 	</script>
+	<script>
+		'use strict';
+
+		function countdown(due) {
+			const now = new Date();
+
+
+			const rest = due.getTime() - now.getTime();
+			const sec = Math.floor(rest / 1000) % 60;
+			const min = Math.floor(rest / 1000 / 60) % 60;
+			const hours = Math.floor(rest / 1000 / 60 / 60) % 24;
+			const days = Math.floor(rest / 1000 / 60 / 60 / 24);
+			const count = [days, hours, min, sec];
+
+			return count;
+		}
+
+		let goal = new Date();
+		goal.setHours(23);
+		goal.setMinutes(59);
+		goal.setSeconds(59);
+
+		console.log(countdown(goal));
+
+		function recalc() {
+			if(del[1].length < 7){
+			const counter = countdown(goal);
+			const time = `残り時間 : ${counter[1]}時間${counter[2]}分${counter[3]}秒`;
+			document.getElementById('timer').textContent = `${time}`;
+			refresh();
+			}else{
+				document.getElementById('timer').textContent = "この討論は終了しています。";
+			}
+		}
+
+		function refresh() {
+			setTimeout(recalc, 1000);
+		}
+
+		recalc();
+	</script>
+
+
+	<script src="js/cron.js"></script>
 </body>
 
 </html>

@@ -1,77 +1,244 @@
-//討論終了画面
+
 <html>
 
-<head>
-     <meta charset="utf-8">
-<h1>討論結果</h1>
-<style>
-		body {
-			text-align: center;
-		}
-
-		#domannaka {
-			width: 70%;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			-webkit-transform: translate(-50%, -50%);
-			transform: translate(-50%, -50%);
-			text-align: center;
-			/*一応BOX内の文字も中央寄せ*/
-		}
-	</style>
-</head>
-
-<body>
-	<p id="odai">お題: ここに討論DBからお題の値 </p>
-	<div id="domannaka">
-		<canvas id="myPieChart"></canvas>
-	</div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js">
-        
-    </script>
-    
-    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
-
-<!-- 投票のスクリプト -->
-    <script src="/path_to/vote.js"></script>
-    
-    
-    <script src="js/auth.js"></script>
-
-    
-	<script>
-		var ctx = document.getElementById("myPieChart");
-		var myPieChart = new Chart(ctx, {
-			type: 'doughnut',
-			data: {
-				labels: ["賛成", "反対"],//賛成0 反対1
-				datasets: [{
-					backgroundColor: [
-						"#13178E",
-						"#888"
-					],
-					borderColor: [
-						"#13178E",
-						"#888"
-					],
-					data: [40, 60]
-				}]
-			},
-			options: {
-				title: {
-					display: true,
-					text: '討論結果'
-				}
+	<head>
+		<meta charset="utf-8">
+		<link rel="manifest" href="manifest.json">
+		<link rel="stylesheet" href="css/all.css">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+	
+		<style>
+			body {
+				 
+				background-image: url(images/background.jpg);
+				text-align: center;
 			}
-		});
-
-	</script>
-
-	<a href="home.html">ホーム画面へ</a>
-
-</body>
-</html>
+	
+			#domannaka {
+				width: 70%;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				-webkit-transform: translate(-50%, -50%);
+				transform: translate(-50%, -50%);
+				text-align: center;
+				/*一応BOX内の文字も中央寄せ*/
+			}
+			
+			#login{
+				float: right;
+			}
+			
+			h1{
+				clear: both;
+			}
+	
+		</style>
+		
+		<div id="login">
+		<div id="info"></div>
+		<form>
+			<button type="button" id="logout" class="hide">ログアウト</button>
+		</form>
+		</div>
+		
+		<h1 id="toptxt" onclick="gohome()"><img src="images/touron.png" width="320" height="320"></h1>
+	
+		<script>
+			function gohome(){
+				window.location.href='./home.html';
+			}
+		</script>
+	</head>
+	
+	<body>
+	<!--<button onclick="cron_run()">cron</button>-->
+	
+	<h2 id="themes"></h2>
+		<!--    Service Workerの読み込み -->
+	
+		<script src="app.js"></script>
+		
+		<canvas id="myPieChart"></canvas>
+		<div id="result"></div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+	
+		
+		<div id="domannaka">
+	<!--		<canvas id="myPieChart"></canvas>-->
+		</div>
+		
+		<!--    firestoe    -->
+		<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
+		<script src="js/config.js"></script>
+		<script src="js/auth.js"></script>
+		
+		<script>
+			
+			//遷移元から値を受け取る
+			var query = location.search;
+			var value = query.split('=');
+			var room = value[1];
+	
+			console.log('遷移元から受け取ったjoin=' + room);
+			
+			
+	//		var room = "210109room2";
+			
+			var theme;
+			
+	
+			var theme1; //お題の中１と２
+			var theme2;
+			
+			var flags = [];
+	
+			var flag0 = 0;
+			var flag1 = 0;
+			
+			var msg;
+	
+			
+			//firestore定義
+			const db = firebase.firestore();
+			var docRef = db.collection("results").doc(room);
+			
+			// データの読み取り
+			docRef.get().then((doc) => {
+				if (doc.exists) {
+					console.log(doc.data());
+	
+					theme = doc.data()["theme"];
+					
+					get(theme);
+					
+				}
+				})
+					.catch((error) => {
+						console.log(`データを取得できませんでした (${error})`);
+					});
+				
+				
+				function get(theme) {
+					var docOdaiRef = db.collection("odai").doc(theme);
+	
+					docOdaiRef.get().then((doc) => {
+	
+						console.log("theme 1 : ", doc.data()["1"]);
+						console.log("theme 2 : ", doc.data()["2"]);
+	
+						theme1 = doc.data()["1"];
+						theme2 = doc.data()["2"];
+						
+						console.log(theme1,theme2)
+						
+						dataget(room);
+					})
+						.catch((error) => {
+						console.log(`データを取得できませんでした (${error})`);
+					});
+				}
+			
+			function dataget(room){
+				
+				var DatadocRef = db.collection("results").doc(room).collection("users");
+				
+	
+				// データの読み取り
+				DatadocRef.get().then(function(querySnapshot) {
+					querySnapshot.forEach(function(doc) {
+						
+						flags.push(doc.data()["flag"])
+						
+						
+					});
+					
+					shiwake(flags);
+				});
+			}
+			
+			function shiwake(flags){
+				
+				for(i=0;i<flags.length;i++){
+					
+					if(flags[i] == 0){
+						flag0 += 1;
+					}else{
+						flag1 += 1;
+					}
+				}
+					
+					console.log(theme1,theme2,flag0,flag1);
+					
+					graph(theme1,theme2,flag0,flag1);
+				
+			}
+		
+		</script>
+		
+		
+		<!--	Chart.js	-->
+	
+		<script>
+			
+			function graph(theme1,theme2,flag0,flag1){
+				
+			console.log("グラフを描画します")
+			var ctx = document.getElementById("myPieChart");
+			var myPieChart = new Chart(ctx, {
+				type: 'doughnut',
+				data: {
+					labels: [theme1, theme2],
+					datasets: [{
+						backgroundColor: [
+							"#00a497",
+							"#888"
+						],
+						borderColor: [
+							"#00a497",
+							"#888"
+						],
+						data: [flag0, flag1]
+					}]
+				},
+				options: {
+					title: {
+						display: true,
+						text: '討論結果'
+					}
+				}
+			});
+				
+				if(flag0 > flag1){
+					msg = `${theme1}の勝利`;
+				}else if(flag0 < flag1){
+					msg = `${theme2}の勝利`;
+				}else if(flag0 = flag1){
+					msg = `引き分け`;
+				}
+				
+				showMsg(msg,theme1,theme2);
+				
+			}
+			
+			function showMsg(msg,theme1,theme2){
+				document.querySelector('#result').innerText = msg;
+				
+				document.querySelector('h2').innerText = `お題: ${theme1}か${theme2}`;
+			}
+			
+		</script>
+		<a href="#" onclick="goDiscus()" class="btn btn--green btn--cubic">討論画面へ</a>
+	
+		<script>
+		function goDiscus(){
+			location.href = "http://tri-s-web.catfood.jp/touronnomori/discussion.html?&&" + room;
+		}
+		</script>
+		<script src="js/cron.js"></script>
+	</body>
+	
+	</html>
+	

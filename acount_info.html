@@ -2,14 +2,33 @@
 
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link rel="manifest" href="manifest.json">
+	<link rel="stylesheet" href="css/c_acount_info.css">
+	<link rel="stylesheet" href="css/all.css">
+
+
 	<title>討論の杜 | アカウントプロフィール</title>
-	<h1>討論の杜</h1>
-	<h2></h2>
-	<div id="info"></div>
-	<form>
-		<button type="button" id="logout" class="hide">ログアウト</button>
-	</form>
-	<h3>アカウントプロフィール</h3>
+
+
+	<div id="login">
+		<div id="info"></div>
+		<form>
+			<button type="button" id="logout" class="hide">ログアウト</button>
+		</form>
+	</div>
+	<!--div login-->
+
+
+	<h1 id="toptxt" onclick="gohome()"><img src="images/touron.png" width="320" height="320"></h1>
+
+	<script>
+		function gohome() {
+			window.location.href = './home.html';
+		}
+	</script>
+
+
 </head>
 
 <body>
@@ -25,84 +44,165 @@
 	<!--    設定読み込み   -->
 	<script src="js/config.js"></script>
 
+	<!--    Service Workerの読み込み -->
 
-	<img src="" id="icon">
-	<div id="username">ユーザー名 : now loading･･･</div>
-	<div id="seibetu">性別 : now loading･･･</div>
-	<div id="nendai">年代 : now loading･･･</div>
+	<script src="js/app.js"></script>
 
-	<a href="acount_setting.html">アカウントの設定へ</a>
-	<h3>過去に参加した討論</h3>
+	<div id="domannaka">
+		<h2>アカウントプロフィール</h2>
+
+		<div id="user">
+
+			<img src="" id="icon">
+			<!--
+			<div id="username">ユーザー名 : now loading･･･</div>
+			<div id="seibetu">性別 : now loading･･･</div>
+			<div id="nendai">年代 : now loading･･･</div>
+-->
+			<div id="prof">
+				<table>
+					<tr>
+						<td>ユーザー名</td>
+						<td id="username">now loading･･･</td>
+					</tr>
+					<tr>
+						<td>性別</td>
+						<td id="seibetu">now loading･･･</td>
+					</tr>
+					<tr>
+						<td>年代</td>
+						<td id="nendai">now loading･･･</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+        
+        <br>
+
+		<a onclick="go_setting()"  class="btn btn--green btn--cubic">アカウントの設定へ</a>
+		<h2>過去に参加した討論</h2>
+
+		<div id="joined_discus"></div>
+	</div>
 
 
 	<script src="js/auth.js"></script>
 
-</body>
 
 
-<script>
+	<script>
+		let uname = document.querySelector('#username');
+		let useibetu = document.querySelector('#seibetu');
+		let unendai = document.querySelector('#nendai');
 
-	let uname = document.querySelector('#username');
-	let useibetu = document.querySelector('#seibetu');
-	let unendai = document.querySelector('#nendai');
-
-
-
-	//遷移元から値を受け取る
-	var query = location.search;
-	var value = query.split('=');
-	var uid = value[1];
-
-	console.log('遷移元から受け取ったUID＝' + uid);
+		var joined_d;
 
 
-	//firestore定義
-	const db = firebase.firestore();
-	var docRef = db.collection("users").doc(value[1]);
+		//遷移元から値を受け取る
+		var query = location.search;
+		var value = query.split('=');
+		var uid = value[1];
 
-	// データの読み取り
+		console.log('遷移元から受け取ったUID=' + uid);
 
-	docRef.get().then((doc) => {
-			if (doc.exists) {
-				console.log(doc.data());
 
-				unendai = doc.data()["nendai"];
-				useibetu = doc.data()["seibetu"];
-				uname = doc.data()["username"];
+		//firestore定義
+		const db = firebase.firestore();
+		var docRef = db.collection("users").doc(uid);
 
-				//年代と性別を設定していない場合
-				if (useibetu == undefined && unendai == undefined) {
-					useibetu = "未設定";
-					unendai = "未設定";
+		// データの読み取り
+
+		docRef.get().then((doc) => {
+				if (doc.exists) {
+					console.log(doc.data());
+
+					unendai = doc.data()["nendai"];
+					useibetu = doc.data()["seibetu"];
+					uname = doc.data()["username"];
+					joined_d = doc.data()["history"];
+
+					//年代と性別を設定していない場合
+					if (useibetu == undefined && unendai == undefined) {
+						useibetu = "未設定";
+						unendai = "未設定";
+					}
+
+					console.log(unendai, useibetu, uname, joined_d);
+
+					showAcountProf(uname, useibetu, unendai);
+
+					console.log("joined_d : " + joined_d);
+
+
+				} else {
+					console.log("404");
+					console.log('アカウントが見つからないので3秒後に討論画面へ戻ります。');
+					setTimeout(joined_d.back(), waitTimer * 3000);
 				}
 
-				console.log(unendai, useibetu, uname);
+				if (joined_d == undefined) {
+					var joind_unde = "過去に参加した討論はありません";
 
-				showAcountProf('ユーザー名 : ' + uname, '性別 : ' + useibetu, '年代 : ' + unendai);
+					notjoin(joind_unde);
+				} else {
+					console.log("find joinDiscus!")
+
+					showJoined_result(joined_d);
+
+				}
+
+			})
+			.catch((error) => {
+				console.log(`データを取得できませんでした (${error})`);
+			});
 
 
-			} else {
-				console.log("404");
-				console.log('アカウントが見つからないので3秒後に討論画面へ戻ります。');
-				setTimeout(history.back(), waitTimer * 3000);
+		/**
+		 * メッセージ表示
+		 **/
+
+		function showAcountProf(fname, fseibetu, fnendai) {
+			document.querySelector('#username').innerText = fname;
+
+			document.querySelector('#seibetu').innerText = fseibetu;
+
+			document.querySelector('#nendai').innerText = fnendai;
+
+		}
+
+		function showJoined_result(roomnum) {
+			var kk = [];
+
+			for (i = 0; i < roomnum.length; i++) {
+				var themeRef = db.collection("results").doc(roomnum[i]);
+				// データの読み取り
+				themeRef.get().then((doc) => {
+						if (doc.exists) {
+							console.log(doc.data());
+							theme = doc.data()["theme"];
+							
+							kk[i]
+
+							findjoin(`<a href="./discussion_result.html?joind=${doc.id}" class="room">${doc.id.slice(0,2)}/${doc.id.slice(2,4)}/${doc.id.slice(4,6)}  ${doc.id.substr(6)} ：${theme}</a>`)
+						}
+					})
+					.catch((error) => {
+						console.log(`データを取得できませんでした (${error})`);
+					});
 			}
-		})
-		.catch((error) => {
-			console.log(`データを取得できませんでした (${error})`);
-		});
 
-	// データの読み取りここまで
+			function notjoin(msg) {
+				document.querySelector('#joined_discus').innerText = msg;
 
-	/**
-	 * メッセージ表示
-	 **/
+			}
 
-	function showAcountProf(fname, fseibetu, fnendai) {
-		document.querySelector('#username').innerText = fname;
-
-		document.querySelector('#seibetu').innerText = fseibetu;
-
-		document.querySelector('#nendai').innerText = fnendai;
-
-	}
-</script></html>
+			function findjoin(join) {
+				document.querySelector('#joined_discus').innerHTML += join;
+			}
+		}
+		
+		function go_setting(){
+			location.href = "http://tri-s-web.catfood.jp/touronnomori/acount_setting.html?" + uid;
+		}
+	</script>
+</body></html>

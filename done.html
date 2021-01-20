@@ -3,6 +3,8 @@
 
 <head>
 	<meta charset="utf-8">
+    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
 	<link rel="stylesheet" href="c_home.css">
 	<title>討論の杜</title>
 </head>
@@ -13,6 +15,11 @@
 		<div id="info" style="text-align: center"></div>
 	</div>
 	<style>
+        
+         body {
+		background-image: url(images/background.jpg);
+	
+        }
 		.domannaka {
 			position: absolute;
 			top: 50%;
@@ -23,6 +30,8 @@
 			text-align: center;
 			/*一応BOX内の文字も中央寄せ*/
 		}
+       
+       
 	</style>
 
 	<!--    モジュール   -->
@@ -33,6 +42,10 @@
 
 	<!--    firestoe    -->
 	<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
+    
+    <!--    Service Workerの読み込み -->
+    
+    <script src="app.js"></script>
 
 	<!--    モジュールここまで   -->
 
@@ -56,30 +69,44 @@
 				var Tuid = firebase.auth().currentUser.uid;
 
 				//ユーザー情報の書き込み　1回のみ（それ以降のログインではエラー）　特に問題はない
-				db.collection("users").doc(Tuid).set({
-						userId: Tuid,
-						username: user.displayName,
-						email: user.email,
-					})
-					.then(function() {
-						console.log("Document successfully written!");
-					})
-					.catch(function(error) {
-						console.error("Error writing document: ", error);
-					});
+				
+				
+				
+				
 
-			} else {
-				h1.innerText = 'Not Login';
-				window.location.href = 'login.html';
+				db.collection("users").doc(Tuid).get().then(function(doc) {
+					if (doc.exists) {
+						console.log("Document data:", doc.data());
+					} else {
+						
+						console.log("No such document!");
+						
+						db.collection("users").doc(Tuid).set({
+							userId: Tuid,
+							username: user.displayName,
+							email: user.email,
+						})
+							.then(function() {
+							console.log("Document successfully written!");
+						})
+							.catch(function(error) {
+							console.error("Error writing document: ", error);
+						});
+						
+					}
+				}).catch(function(error) {
+					console.log("Error getting document:", error);
+				});
 			}
 		});
+
 
 	</script>
 
 	<script type="text/javascript">
 		// 一定時間経過後に指定ページにジャンプする
 		waitTimer = 3; // 何秒後に移動する
-		url = "http://localhost/SS2ATouronnomori/home.html"; // 移動するアドレス
+		url = "./home.html"; // 移動するアドレス
 		function jumpPage() {
 			location.href = url;
 		}
@@ -88,7 +115,7 @@
 
 	</script>
 
-
+ 
 </body>
 
 </html>

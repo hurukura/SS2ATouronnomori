@@ -1,0 +1,25 @@
+{
+	"name": 			"討論の杜",
+	"short_name": 		"討論の杜",
+	"description": 		"討論",
+	"start_url": 		"login.html",
+	"display": 			"standalone",
+	"background_color": "#DDFFDD",
+	"theme_color": 		"#DDFFDD",
+	"icons": [
+
+
+		{
+			"src": "images/touron192×192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "images/touron256×256.png",
+			"sizes": "256x256",
+			"type": "image/png"
+		}
+
+
+	]
+}
