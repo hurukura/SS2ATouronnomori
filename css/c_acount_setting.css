@@ -1,0 +1,16 @@
+body{
+	text-align: center;
+}
+.setting{
+	text-align: center;
+	padding: 0.5em 1em;
+	margin: 0.5m 1em 0.5m 1em;
+	color: #000;
+	background: white;
+	border-top: solid 5px #FFCC77;
+	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22);
+}
+.setting p {
+	margin: 0;
+	padding: 0;
+}
