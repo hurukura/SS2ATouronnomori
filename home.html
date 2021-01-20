@@ -155,6 +155,26 @@
 
 	<!--FireStoreからルーム情報を取得-->
 	<script>
+		//lolipop cron ができないため日付でルームを変更
+		var today = new Date();
+		var year = String(today.getFullYear()).slice(-2);
+		var month = String(today.getMonth() + 1);
+		var day = String(today.getDate());
+		var date = year + month + day;
+		console.log(date);
+		
+		const db = firebase.firestore();
+		var dateRef = db.collection("chatroom").doc("date");
+		dateRef.get().then(function(doc) {
+				if (doc.exists) {
+					console.log("date" + doc.data()["date"]);
+				} else {
+					console.log("No such document!");
+				}
+			}).catch(function(error) {
+				console.log("Error getting document:", error);
+			});
+		
 		//参加ボタンでトークに参加
 		//参加人数を集計しdiscussion_goに渡す	snapshotにラグがあるためこの関数を追加
 		function discussion(id, userid) {
@@ -240,7 +260,7 @@
 		}
 
 		//ルーム情報を表示
-		var db = firebase.firestore();
+//		var db = firebase.firestore();
 		var docRef = db.collection("chatroom");
 		docRef.get().then((query) => {
 			query.forEach((doc) => {});

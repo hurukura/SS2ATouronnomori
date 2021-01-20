@@ -15,7 +15,7 @@
 	<script>
 		const db = firebase.firestore();
 
-		const docRef = db.collection("chatroom").doc("room1");
+		const docRef = db.collection("chatroom").doc("room3");
 
 		var today = new Date();
 		var year = String(today.getFullYear()).slice(-2);
@@ -37,7 +37,7 @@
 						id: doc.data()["id"],
 						msg: doc.data()["msg"],
 						name: doc.data()["name"]
-					)}
+					})
 						.then(function(docRef) {
 						console.log("Document written with ID: ", docRef.id);
 					})

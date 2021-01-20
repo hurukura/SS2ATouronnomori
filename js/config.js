@@ -1,11 +1,19 @@
 var firebaseConfig = {
-    apiKey: "AIzaSyBOCi7jqiBdBpTG3OT0DriI5K7BB7ktRkQ",
-    authDomain: "s192298auth.firebaseapp.com",
-    databaseURL: "https://s192298auth.firebaseio.com",
-    projectId: "s192298auth",
-    storageBucket: "s192298auth.appspot.com",
-    messagingSenderId: "465689428961",
-    appId: "1:465689428961:web:c3916e42b875ab4f1bc8a0"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+  apiKey: "AIzaSyCKJKx0gUnD2qBB3cdyk_wZ8bJAwdeqFWw",
+  authDomain: "touronnomori.firebaseapp.com",
+  databaseURL: "https://touronnomori.firebaseio.com",
+  projectId: "touronnomori",
+  storageBucket: "touronnomori.appspot.com",
+  messagingSenderId: "638781936294",
+  appId: "1:638781936294:web:32215a2b2d87370fb5da67",
+  measurementId: "G-F5WWPJ82Q4"
+};
+// Initialize Firebase
+
+firebase.initializeApp(firebaseConfig);
+
+//----------------------------------------------
+// ドメインとポート番号
+//----------------------------------------------
+let domain = document.domain;
+let port = (domain === 'localhost') ? 5000 : 80;

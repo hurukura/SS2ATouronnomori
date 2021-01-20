@@ -1,3 +1,5 @@
+var username;
+var userid;
 firebase.auth().onAuthStateChanged((user) => {
 	let logout = document.getElementById("logout");
     
@@ -27,14 +29,17 @@ firebase.auth().onAuthStateChanged((user) => {
 	//-----------------------------------
 	// ログイン者への処理
 	//-----------------------------------
+	var nameurl = `<a href='acount_info.html?uid=${user.uid}'>${user.displayName}</a>`;
+	username = user.displayName;
+	
 	// ログインメッセージ
 	if(wel){
-		//welcomがある
-		showMessage('ようこそ！', `ログイン中 : ${user.displayName}さん`);
+		//welcomがある''
+		showMessage('ようこそ！', `ログイン中 : ${nameurl}さん`);
 
 	}else{
 		//welcomがない（infoだけ）
-		showMessage_2(`ログイン中 : ${user.displayName}さん`);
+		showMessage_2(`ログイン中 : ${nameurl}さん`);
 	}
 	
 	console.log(user);
@@ -67,10 +72,17 @@ firebase.auth().onAuthStateChanged((user) => {
 function showMessage(title, msg) {
 	console.log("welocom有");
 	document.querySelector('#welcom').innerText = title;
-	document.querySelector('#info').innerText = msg;
+	document.querySelector('#info').innerHTML = msg;
 }
 //welcomがない（infoだけ）
 function showMessage_2(msg){
 	console.log("welocom無");
-	document.querySelector('#info').innerText = msg;
+	document.querySelector('#info').innerHTML = msg;
+}
+
+function getUserName(){
+	return username;
+}
+function getUserId(){
+	return userid;
 }
