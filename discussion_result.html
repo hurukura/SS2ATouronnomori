@@ -9,7 +9,6 @@
 	
 		<style>
 			body {
-				 
 				background-image: url(images/background.jpg);
 				text-align: center;
 			}
@@ -84,18 +83,19 @@
 	
 			console.log('遷移元から受け取ったjoin=' + room);
 			
-			
-	//		var room = "210109room2";
-			
+			//お題
 			var theme;
-			
-	
-			var theme1; //お題の中１と２
+
+			//お題の中１と２
+			var theme1; 
 			var theme2;
-			
+
+			//参加ユーザーがどっちを選択したか
 			var flags = [];
-	
+
+			//上側（0を選択）の数
 			var flag0 = 0;
+			//下側（1を選択）の数
 			var flag1 = 0;
 			
 			var msg;
@@ -108,10 +108,10 @@
 			// データの読み取り
 			docRef.get().then((doc) => {
 				if (doc.exists) {
-					console.log(doc.data());
-	
+					console.log(doc.data())
+					//お題を取得
 					theme = doc.data()["theme"];
-					
+					//取得したお題をもってgetファンクションへ
 					get(theme);
 					
 				}
@@ -121,6 +121,7 @@
 					});
 				
 				
+				//お題をFirestoreから取得するファンクション
 				function get(theme) {
 					var docOdaiRef = db.collection("odai").doc(theme);
 	
@@ -134,6 +135,7 @@
 						
 						console.log(theme1,theme2)
 						
+						//ルーム番号を持ってdatagetファンクションへ
 						dataget(room);
 					})
 						.catch((error) => {
@@ -141,24 +143,25 @@
 					});
 				}
 			
+
+				//ユーザーが最後に選択した選択肢を取得する
 			function dataget(room){
 				
 				var DatadocRef = db.collection("results").doc(room).collection("users");
 				
-	
 				// データの読み取り
 				DatadocRef.get().then(function(querySnapshot) {
 					querySnapshot.forEach(function(doc) {
-						
+						//flags[]にflagをpushする
 						flags.push(doc.data()["flag"])
 						
-						
 					});
-					
+					//取得し終わったflags[]をもってshiwakeファンクションへ
 					shiwake(flags);
 				});
 			}
 			
+			//flags[]の中身を0と1で仕分けて数をflag1,flag2でカウントする
 			function shiwake(flags){
 				
 				for(i=0;i<flags.length;i++){
@@ -171,7 +174,7 @@
 				}
 					
 					console.log(theme1,theme2,flag0,flag1);
-					
+					//0と1の数とお題をもってgraphファンクションへ
 					graph(theme1,theme2,flag0,flag1);
 				
 			}
@@ -182,7 +185,7 @@
 		<!--	Chart.js	-->
 	
 		<script>
-			
+			//結果を円グラフ化する
 			function graph(theme1,theme2,flag0,flag1){
 				
 			console.log("グラフを描画します")
@@ -211,11 +214,13 @@
 				}
 			});
 				
-				if(flag0 > flag1){
+
+			//勝敗表示
+				if(flag0 > flag1){	//flag0が多い
 					msg = `${theme1}の勝利`;
-				}else if(flag0 < flag1){
+				}else if(flag0 < flag1){	//flag1が多い
 					msg = `${theme2}の勝利`;
-				}else if(flag0 = flag1){
+				}else if(flag0 = flag1){	//どちらも同票
 					msg = `引き分け`;
 				}
 				
@@ -223,9 +228,11 @@
 				
 			}
 			
+			//メッセージを表示する
 			function showMsg(msg,theme1,theme2){
+				//勝敗
 				document.querySelector('#result').innerText = msg;
-				
+				//お題
 				document.querySelector('h2').innerText = `お題: ${theme1}か${theme2}`;
 			}
 			
@@ -233,6 +240,7 @@
 		<a href="#" onclick="goDiscus()" class="btn btn--green btn--cubic">討論画面へ</a>
 	
 		<script>
+			//討論画面へ　を押したときの処理
 		function goDiscus(){
 			location.href = "http://tri-s-web.catfood.jp/touronnomori/discussion.html?&&" + room;
 		}

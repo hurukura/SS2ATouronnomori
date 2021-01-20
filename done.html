@@ -60,7 +60,7 @@
 			let h1 = document.querySelector('h1');
 			let info = document.querySelector('#info');
 
-			if (user) {
+			if (user) {	//ログインしている
 				h1.innerText = 'ようこそ！';
 				info.innerHTML = `${user.displayName}さん`;
 				console.log(user);
@@ -68,34 +68,35 @@
 				//uidの取得
 				var Tuid = firebase.auth().currentUser.uid;
 
-				//ユーザー情報の書き込み　1回のみ（それ以降のログインではエラー）　特に問題はない
-				
-				
-				
-				
-
+				//ユーザー情報の書き込み　
 				db.collection("users").doc(Tuid).get().then(function(doc) {
+
+					//uidの情報がFirestoreにある（すでにログインしたことがある）
 					if (doc.exists) {
-						console.log("Document data:", doc.data());
+						console.log("Not First login!")
+						console.log("User data:", doc.data());
+
+					//uidの情報がFirestoreにない（初ログイン）
 					} else {
 						
-						console.log("No such document!");
+						console.log("No such document!　first login!");
 						
+						//データの書き込み　ユーザー名、ユーザーID、メールアドレス
 						db.collection("users").doc(Tuid).set({
 							userId: Tuid,
 							username: user.displayName,
 							email: user.email,
 						})
 							.then(function() {
-							console.log("Document successfully written!");
+							console.log("UserData successfully written!");
 						})
 							.catch(function(error) {
-							console.error("Error writing document: ", error);
+							console.error("Error writing UserData: ", error);
 						});
 						
 					}
 				}).catch(function(error) {
-					console.log("Error getting document:", error);
+					console.log("Error getting UserData:", error);
 				});
 			}
 		});
@@ -111,7 +112,6 @@
 			location.href = url;
 		}
 		setTimeout("jumpPage()", waitTimer * 1000)
-		//
 
 	</script>
 
