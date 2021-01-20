@@ -1,5 +1,6 @@
 //疑似cron（lolipop cron でFireStoreへアクセスできないため日付(Fire Storeのdate)で疑似的に実装）
 
+//各種定義
 var LIST = [];
 var odaiLIST = [];
 var usersLIST = [];
@@ -10,40 +11,32 @@ var year = String(today.getFullYear()).slice(-2);
 var month = String(("0" + (today.getMonth() + 1)).slice(-2));
 var day = String(("0" + today.getDate()).slice(-2));
 var date = year + month + day;
-console.log(date);
 
-console.log(date);
 //chatroom/dateの日付が違うときデータ移行&削除
 var dateRef = db.collection("chatroom").doc("date");
-
 cron();
-
 function cron() {
 	count = 0;
 	dateRef.get().then(function (doc) {
 		if (doc.exists) {
-			if (doc.data()["date"] == date) { //当日
+			if (doc.data()["date"] == date) { //当日　ルーム表示して終了
 				console.log("On the day");
 				if (str == "home.html") {
 					displayRoom(); //ルーム表示
 				}
-
-			} else { //前日
-				screenLock();
+			} else { //前日	chatroomの内容をresultsに移行してルーム表示
+				screenLock();//移行中にユーザーが画面操作しないようにロック
 				console.log("The day before");
-				setDate();
+				setDate();//FireStoreのdateを更新
 				for (var i = 1; i <= 10; i++) {
 					result(i); //データ移行&削除
-					moveUsers(i);
+					moveUsers(i);//usersを移行
 					newRoom(i); //ルーム新規作成
-
 				}
-
 				if (str == "home.html") {
 					displayRoom(); //ルーム表示
 				}
 				// ロック画面の削除
-
 			}
 		} else {
 			console.log("chatroom/dateがありません");
@@ -55,7 +48,7 @@ function cron() {
 
 
 
-//疑似cron実行用のdate
+//疑似cron実行用のdateの更新
 function setDate() {
 	db.collection("chatroom").doc("date").set({
 			date: date
@@ -86,7 +79,7 @@ function result(i) {
 				.catch(function (error) {
 					console.error("Error adding document: ", error);
 				});
-			buff.push(doc.id); //buff[]にmessagesのidを入れる
+			buff.push(doc.id); //buff[]に移行したmessagesのidを入れる
 		});
 		LIST = buff;
 		console.log("LIST : " + LIST);
@@ -94,7 +87,6 @@ function result(i) {
 		while (LIST.length != 0) {
 			deleteMessages(i, LIST.pop());
 		}
-
 	});
 }
 
@@ -113,7 +105,7 @@ function moveUsers(i) {
 	db.collection("chatroom").doc("room" + i).collection("users").get().then(function (querySnapshot) {
 		var buffUsers = []; //データ削除に必要
 		querySnapshot.forEach(function (doc) { //データ移行
-			db.collection("users").doc(doc.id).update({
+			db.collection("users").doc(doc.id).update({//usersの履歴用historyに追加
 					history: firebase.firestore.FieldValue.arrayUnion(date + "room" + i)
 				})
 				.then(function () {
@@ -122,7 +114,7 @@ function moveUsers(i) {
 				.catch(function (error) {
 					console.error("Error writing document: ", error);
 				});
-			db.collection("results").doc(date + "room" + i).collection("users").doc(doc.id).set({
+			db.collection("results").doc(date + "room" + i).collection("users").doc(doc.id).set({//usersのflagをresultsに追加
 					flag: doc.data()["flag"]
 				})
 				.then(function (docRef) {
@@ -139,7 +131,6 @@ function moveUsers(i) {
 		while (usersLIST.length != 0) {
 			deleteUsers(i, usersLIST.pop());
 		}
-
 	});
 }
 //users削除
@@ -155,9 +146,7 @@ function deleteUsers(i, usersList) {
 //roominfoを移行
 function newRoom(i) {
 	db.collection("chatroom").doc("room" + i).get().then(function (doc) {
-
 		var buffUsers = doc.data()["users"];
-		console.log(typeof Object.entries(buffUsers));
 		db.collection("results").doc(date + "room" + i).set({
 				theme: doc.data()["theme"],
 				users: buffUsers
@@ -199,6 +188,7 @@ function deleteRoominfo(i) {
 		});
 }
 
+//新規ルームにお題などセット
 function set(i, odaiLIST) {
 	var kimeta = Math.floor(Math.random() * odaiLIST.length);
 	var odaiGet = db.collection("odai").doc(odaiLIST[kimeta]);
@@ -220,7 +210,7 @@ function set(i, odaiLIST) {
 				})
 				.then(function () {
 					console.log("Document successfully written!");
-
+					//countが10(cronがすべて終了)の時ロック解除
 					count++;
 					if (count == 10) {
 						delete_dom_obj('screenLock');
@@ -238,7 +228,6 @@ function set(i, odaiLIST) {
 	}).catch(function (error) {
 		console.log("Error getting document:", error);
 	});
-
 }
 
 // ロック用関数
@@ -284,8 +273,8 @@ function delete_dom_obj(id_name) {
 	dom_obj_parent.removeChild(dom_obj);
 }
 
+//ホーム画面へ画面遷移
 function goHome() {
-	
 	if (str.slice(0, 15) == "discussion.html") {
 		window.alert('日付変更処理が終わりました。結果画面を表示します。');
 		location.href = "http://tri-s-web.catfood.jp/touronnomori/discussion_result.html?joind=" + date + str.substr(18);
