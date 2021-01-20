@@ -16,26 +16,105 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 	<div id="info"></div>
 	<form>
 		<button type="button" id="logout" class="hide">ログアウト</button>
-		<h1>討論の杜</h1>
+		<a href="home.html">トップへ</a>
+		<h1　id="toptxt">討論の杜</h1>
 	</form>
-	<!--ルーム情報用div-->
-	<div id="room">
-		<!--残り時間-->
-		<p><span id="timer"></span></p>
-	</div>
 
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-firestore.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
 
-	<script src="js/config.js">
-	</script>
-	<script>
-		var uname;
-		var userid;
-	</script>
+	<script src="js/config.js"></script>
+	<!--	<script src="js/auth.js"></script>-->
+	
+	<style>
+		.lb1,lb2{
+			font-size: nomal-size;
+		}
+	</style>
 
-	<script src="js/auth.js"></script>
+
+	<script>
+		var userid;
+		var uname;
+
+		firebase.auth().onAuthStateChanged((user) => {
+			let logout = document.getElementById("logout");
+
+			var wel = document.getElementById('welcom');
+
+			//-----------------------------------
+			// ログインチェック
+			//-----------------------------------
+			if (!user) {
+
+				if (wel) {
+					//welcomがある
+					showMessage('Not Login', 'ログインしていません');
+
+				} else {
+					//welcom がない（infoだけ）
+					showMessage_2('ログインしていません');
+
+				}
+
+				logout.classList.add("hide");
+				window.location.href = 'login.html';
+				return (false);
+			}
+
+			//-----------------------------------
+			// ログイン者への処理
+			//-----------------------------------
+			// ログインメッセージ
+			if (wel) {
+				//welcomがある
+				showMessage('ようこそ！', `ログイン中 : ${user.displayName}さん`);
+
+			} else {
+				//welcomがない（infoだけ）
+				showMessage_2(`ログイン中 : ${user.displayName}さん`);
+			}
+			uname = user.displayName
+			console.log("current : " + uname);
+
+			userid = user.uid;
+			console.log("current : " + userid);
+
+			// ログアウトボタンを表示
+			logout.classList.remove("hide");
+
+			// ログアウトボタンを押下
+			logout.addEventListener("click", () => {
+				firebase.auth().signOut().then(() => {
+						console.log("ログアウトしました");
+
+						//アラートを表示
+						window.alert('ログアウトしました。またきてね');
+						//OKでログイン画面へ遷移
+						window.location.href = 'login.html'
+					})
+					.catch((error) => {
+						console.log(`ログアウト時にエラーが発生しました (${error})`);
+					});
+			});
+		});
+		/**
+		 * メッセージ表示
+		 **/
+		//welcomがある
+		function showMessage(title, msg) {
+			console.log("welocom有");
+			document.querySelector('#welcom').innerText = title;
+			document.querySelector('#info').innerText = msg;
+		}
+		//welcomがない（infoだけ）
+		function showMessage_2(msg) {
+			console.log("welocom無");
+			document.querySelector('#info').innerText = msg;
+		}
+
+	</script>
 
 	<!--参加ユーザーの表示-->
 	<script>
@@ -64,8 +143,10 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 		<div id="bms_send">
 			<textarea id="bms_send_message"></textarea>
 			<div id="radio">
-				<input type="radio" name="flag" value="0">賛成
-				<br><input type="radio" name="flag" value="1">反対
+
+				<input type="radio" name="flag" value="0" id="rd1" checked><label for="rd1" id="lb1"></label>
+				<br>
+				<input type="radio" name="flag" value="1" id="rd2"><label for="rd2" id="lb2"></label>
 			</div>
 			<div id="bms_send_btn">送信</div>
 		</div>
@@ -125,6 +206,92 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 			});
 		});
 
+	</script>
+	<script>
+		/**
+		 * お題情報を取得
+		 **/
+		
+		var themeName; //お題のドキュメント名
+
+		var themes = []; //お題をランダム取得するための配列
+
+		var theme1; //お題の中１と２
+		var theme2;
+
+		
+		//---------------------------------------
+		// roomのお題を取得する
+		//---------------------------------------
+
+		var docRoominfoRef = db.collection("chatroom").doc(roomid).collection("roominfo").doc(roomid);
+
+		docRoominfoRef.get().then((doc) => {
+
+				console.log("theme : ", doc.data()["theme"]);
+
+				themeName = doc.data()["theme"];
+
+			//お題をもってgetファンクションへ
+				get(themeName);
+
+			})
+			.catch((error) => {
+				console.log(`データを取得できませんでした (${error})`);
+			});
+		
+		//---------------------------------------
+		// get ファンクション 
+		// odaiコレクションから1と2をgetする
+		//---------------------------------------
+
+		function get(theme) {
+			var docOdaiRef = db.collection("odai").doc(theme);
+
+			docOdaiRef.get().then((doc) => {
+
+					console.log("theme 1 : ", doc.data()["1"]);
+					console.log("theme 2 : ", doc.data()["2"]);
+
+					theme1 = doc.data()["1"];
+					theme2 = doc.data()["2"];
+
+				// getした1と2の値をもってsetOneTwoへ
+					setOneTwo(theme1, theme2);
+
+				})
+				.catch((error) => {
+					console.log(`データを取得できませんでした (${error})`);
+				});
+
+
+
+		}
+		//---------------------------------------
+		// setOneTwo ファンクション
+		//持ってきた１と２の値をラジオボタンのラベルにセットする
+		//---------------------------------------
+
+		function setOneTwo(one, two) {
+			var lb1 = document.querySelector('#lb1');
+			
+			var lb2 = document.querySelector('#lb2');
+
+			console.log(one.length);
+			
+			//もし文字数が3文字以上ならフォントサイズを5pxに
+			if (one.length >= 3) {
+				lb1.style.fontSize = "5px";
+				lb2.style.fontSize = "5px";
+		}
+			
+			//ここでセット
+		lb1.innerText = one;
+		lb2.innerText = two;
+		}
+
+
+
 		/**
 		 * 送信ボタン押下
 		 **/
@@ -139,6 +306,7 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				return (false);
 			}
 			// メッセージをfirestoreへ送信
+
 			messagesRef.add({
 					name: uname,
 					msg: msg,
@@ -219,41 +387,6 @@ https://qiita.com/taketakekaho/items/52b7c196ddbd4cb3c968
 				("0" + t.getMinutes()).slice(-2)
 			);
 		}
-
-		//以下カウントダウン
-		function countdown(due) {
-			const now = new Date();
-			const rest = due.getTime() - now.getTime();
-			const sec = Math.floor(rest / 1000) % 60;
-			const min = Math.floor(rest / 1000 / 60) % 60;
-			const hours = Math.floor(rest / 1000 / 60 / 60) % 24;
-			const days = Math.floor(rest / 1000 / 60 / 60 / 24);
-			const count = [days, hours, min, sec];
-
-			return count;
-		}
-
-		let goal = new Date();
-		goal.setHours(23);
-		goal.setMinutes(59);
-		goal.setSeconds(59);
-		console.log(countdown(goal));
-
-		function recalc() {
-			const counter = countdown(goal);
-			const time = `${counter[1]}時間${counter[2]}分${counter[3]}秒`;
-			document.getElementById('timer').textContent = time;
-			//↓ここに残り0秒になった場合の処理
-
-			refresh();
-		}
-
-		function refresh() {
-			setTimeout(recalc, 1000);
-		}
-		//ここまで
-
-		recalc();
 
 	</script>
 </body>
