@@ -1,507 +1,502 @@
-<?php
-
-?>
-
 <head>
-	<meta charset="utf-8">
-<!--    スマホ用画面-->
-	<meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="utf-8">
+    <!--    スマホ用画面-->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="css/c_home.css" media="screen and (max-width:800px)">
     <link rel="stylesheet" href="css/c_home.css" media="screen and (max-width:480px)">
     <link rel="stylesheet" href="css/c_home.css" media="screen and (max-width:0px)">
 
-	
-<!--    CSS関連-->
+
+    <!--    CSS関連-->
     <link rel="stylesheet" href="css/c_home.css">
-	<link rel="stylesheet" href="css/all.css">
-	<link rel="manifest" href="manifest.json">
-	
-	
-	<title>討論の杜</title>
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="manifest" href="manifest.json">
+
+
+    <title>討論の杜</title>
 </head>
 
 <body>
 
-	<!--モジュール-->
+    <!--モジュール-->
 
-	<!--firebase関連-->
-	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
-	<script src="js/config.js"></script>
+    <!--firebase関連-->
+    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.5.0/firebase-firestore.js"></script>
+    <script src="js/config.js"></script>
 
-	<!--各種定義-->
-	<script>
-		var userid = "";
-		const db = firebase.firestore();
+    <!--各種定義-->
+    <script>
+        var userid = "";
+        const db = firebase.firestore();
+
+    </script>
+
+    <!--    Service Workerの読み込み -->
+
+    <script src="js/app.js"></script>
+
+    <script src="js/cron.js"></script>
+    <div class="home">
+
+
+        <!-- 操作説明用のボタン-->
+        <!--疑似日付変更（討論終了用）-->
+        <button onclick="cron_run()">cron</button>
 		
 
-	</script>
+        <div class="login">
 
-	<!--    Service Workerの読み込み -->
+            <div id="info"></div>
+            <form>
+                <button type="button" id="logout" class="hide">ログアウト</button>
+            </form>
+        </div>
+        <h1 id="toptxt" onclick="gohome()"><img src="images/touron.png" width="250" height="250"></h1>
 
-	<script src="js/app.js"></script>
+        <script>
+            function gohome() {
+                window.location.href = './home.html';
+            }
 
-	<script src="js/cron.js"></script>
-	<div class="home">
-	
-	
-	<!-- 操作説明用のボタン-->
-		<!--疑似日付変更（討論終了用）-->
-		<button onclick="cron_run()">cron</button>
-		<!--説明用の状態に戻す-->
-		<button onclick="undo_run()">undo</button>
-	<!--			-->
-		
-	<div class="login">
-	
-		<div id="info"></div>
-		<form>
-			<button type="button" id="logout" class="hide">ログアウト</button>
-		</form>
-	</div> 
-		<h1 id="toptxt" onclick="gohome()" ><img src="images/touron.png" width="320" height="320"></h1>
+        </script>
+        <h2>...Please wait</h2>
 
-		<script>
-			function gohome(){
-				window.location.href='./home.html';
-			}
-		</script>
-		<h2>...Please wait</h2>
 
-				
-		
-		<h3 style="text-align: center">現在行われている討論</h3>
-		
-		<table class="discussion_table" id="roomtable" border="1" frame="void" style="margin-left: auto;margin-right: auto">
-            
-            
-			<tr>
-				<th>No.</th>
-				<th>お題</th>
-				<th>人数</th>
-				<th>参加/観戦</th>
-			</tr>
-            
-<!--            ルームNo.1-->
-<!--            参加ボタンでトーク画面　観戦ボタンでトーク観戦画面-->
-			<tr>
-				<td align='center'>1</td>
-				<td align='center'>
-					<div id='room1'></div>
-				</td>
-				<td align='center'>
-					<div id='count1'></div>
-				</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(1,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(1)' value='観戦' /></td>
-			</tr>
-<!--            ルームNo.2-->
-			<tr>
-				<td align='center'>2</td>
-				<td align='center'>
-					<div id='room2'></div>
-				</td>
-				<td align='center'>
-					<div id='count2'></div>
-				</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(2,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(2)' value='観戦' /></td>
-			</tr>
-<!--            ルームNo.3-->
-			<tr>
-				<td align='center'>3</td>
-				<td align='center'>
-					<div id='room3'></div>
-				</td>
-				<td align='center'>
-					<div id='count3'></div>
-				</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(3,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(3)' value='観戦' /></td>
-			</tr>
-<!--            ルームNo.4-->
-			<tr>
-				<td align='center'>4</td>
-				<td align='center'>
-					<div id='room4'></div>
-				</td>
-				<td align='center'>
-					<div id='count4'></div>
-				</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(4,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(4)' value='観戦' /></td>
-			</tr>
-<!--            ルームNo.5-->
-			<tr>
-				<td align='center'>5</td>
-				<td align='center'>
-					<div id='room5'></div>
-				</td>
-				<td align='center'>
-					<div id='count5'></div>
-				</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(5,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(5)' value='観戦' /></td>
-			</tr>
-<!--            ルームNo.6-->
-			<tr>
-				<td align='center'>6</td>
-				<td align='center'>
-					<div id='room6'></div>
-				</td>
-				<td align='center'>
-					<div id='count6'></div>
-				</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(6,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(6)' value='観戦' /></td>
-			</tr>
-<!--            ルームNo.7-->
-			<tr>
-				<td align='center'>7</td>
-				<td align='center'>
-					<div id='room7'></div>
-				</td>
-				<td align='center'>
-					<div id='count7'></div>
-				</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(7,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(7)' value='観戦' /></td>
-			</tr>
-<!--            ルームNo.8-->
-			<tr>
-				<td align='center'>8</td>
-				<td align='center'>
-					<div id='room8'></div>
-				</td>
-				<td align='center'>
-					<div id='count8'></div>
-				</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(8,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(8)' value='観戦' /></td>
-			</tr>
-<!--            ルームNo.9-->
-			<tr>
-				<td align='center'>9</td>
-				<td align='center'>
-					<div id='room9'></div>
-				</td>
-				<td align='center'>
-					<div id='count9'></div>
-				</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(9,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(9)' value='観戦' /></td>
-			</tr>
-<!--            ルームNo.10-->
-			<tr>
-				<td align='center'>10</td>
-				<td align='center'>
-					<div id='room10'></div>
-				</td>
-				<td align='center'>
-					<div id='count10'></div>
-				</td>
-				<td align='center'><input type='button' name='chatroom' onclick='discussion(10,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(10)' value='観戦' /></td>
-			</tr>
-		</table>
-		<a id="setting_yudo" href="#" onclick="go_setting()">アカウントの設定</a>
-	</div>
 
-	<!--ここからJavaScript-->
+        <h3 style="text-align: center">現在行われている討論</h3>
 
-	<!--authログインチェック-->
-	<script>
-		firebase.auth().onAuthStateChanged((user) => {
-			let logout = document.getElementById("logout");
-			//-----------------------------------
-			// ログインチェック
-			//-----------------------------------
-			if (!user) {
-				showMessage('Not Login', 'ログインしていません');
-				logout.classList.add("hide");
-				window.location.href = 'login.html';
-				return (false);
-			}
-			//-----------------------------------
-			// ログイン者への処理
-			//-----------------------------------
-			// ログインメッセージ
-			
-			var nameurl = `<a href='acount_info.html?uid=${user.uid}'>${user.displayName}</a>`;
-			
-			showMessage('ようこそ！', `ログイン中 : ${nameurl}さん`);
-			console.log(user);
+        <table class="discussion_table" id="roomtable" border="1" frame="void" style="margin-left: auto;margin-right: auto">
 
-			userid = user.uid;
-			console.log(userid);
 
-			// ログアウトボタンを表示
-			logout.classList.remove("hide");
+            <tr>
+                <th>No.</th>
+                <th>お題</th>
+                <th>人数</th>
+                <th>参加/観戦</th>
+            </tr>
 
-			// ログアウトボタンを押下
-			logout.addEventListener("click", () => {
-				firebase.auth().signOut().then(() => {
-						console.log("ログアウトしました");
+            <!--            ルームNo.1-->
+            <!--            参加ボタンでトーク画面　観戦ボタンでトーク観戦画面-->
+            <tr>
+                <td align='center'>1</td>
+                <td align='center'>
+                    <div id='room1'></div>
+                </td>
+                <td align='center'>
+                    <div id='count1'></div>
+                </td>
+                <td align='center'><input type='button' name='chatroom' onclick='discussion(1,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(1)' value='観戦' /></td>
+            </tr>
+            <!--            ルームNo.2-->
+            <tr>
+                <td align='center'>2</td>
+                <td align='center'>
+                    <div id='room2'></div>
+                </td>
+                <td align='center'>
+                    <div id='count2'></div>
+                </td>
+                <td align='center'><input type='button' name='chatroom' onclick='discussion(2,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(2)' value='観戦' /></td>
+            </tr>
+            <!--            ルームNo.3-->
+            <tr>
+                <td align='center'>3</td>
+                <td align='center'>
+                    <div id='room3'></div>
+                </td>
+                <td align='center'>
+                    <div id='count3'></div>
+                </td>
+                <td align='center'><input type='button' name='chatroom' onclick='discussion(3,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(3)' value='観戦' /></td>
+            </tr>
+            <!--            ルームNo.4-->
+            <tr>
+                <td align='center'>4</td>
+                <td align='center'>
+                    <div id='room4'></div>
+                </td>
+                <td align='center'>
+                    <div id='count4'></div>
+                </td>
+                <td align='center'><input type='button' name='chatroom' onclick='discussion(4,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(4)' value='観戦' /></td>
+            </tr>
+            <!--            ルームNo.5-->
+            <tr>
+                <td align='center'>5</td>
+                <td align='center'>
+                    <div id='room5'></div>
+                </td>
+                <td align='center'>
+                    <div id='count5'></div>
+                </td>
+                <td align='center'><input type='button' name='chatroom' onclick='discussion(5,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(5)' value='観戦' /></td>
+            </tr>
+            <!--            ルームNo.6-->
+            <tr>
+                <td align='center'>6</td>
+                <td align='center'>
+                    <div id='room6'></div>
+                </td>
+                <td align='center'>
+                    <div id='count6'></div>
+                </td>
+                <td align='center'><input type='button' name='chatroom' onclick='discussion(6,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(6)' value='観戦' /></td>
+            </tr>
+            <!--            ルームNo.7-->
+            <tr>
+                <td align='center'>7</td>
+                <td align='center'>
+                    <div id='room7'></div>
+                </td>
+                <td align='center'>
+                    <div id='count7'></div>
+                </td>
+                <td align='center'><input type='button' name='chatroom' onclick='discussion(7,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(7)' value='観戦' /></td>
+            </tr>
+            <!--            ルームNo.8-->
+            <tr>
+                <td align='center'>8</td>
+                <td align='center'>
+                    <div id='room8'></div>
+                </td>
+                <td align='center'>
+                    <div id='count8'></div>
+                </td>
+                <td align='center'><input type='button' name='chatroom' onclick='discussion(8,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(8)' value='観戦' /></td>
+            </tr>
+            <!--            ルームNo.9-->
+            <tr>
+                <td align='center'>9</td>
+                <td align='center'>
+                    <div id='room9'></div>
+                </td>
+                <td align='center'>
+                    <div id='count9'></div>
+                </td>
+                <td align='center'><input type='button' name='chatroom' onclick='discussion(9,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(9)' value='観戦' /></td>
+            </tr>
+            <!--            ルームNo.10-->
+            <tr>
+                <td align='center'>10</td>
+                <td align='center'>
+                    <div id='room10'></div>
+                </td>
+                <td align='center'>
+                    <div id='count10'></div>
+                </td>
+                <td align='center'><input type='button' name='chatroom' onclick='discussion(10,userid)' value='参加' /><input type='button' name='kansenroom' onclick='participation(10)' value='観戦' /></td>
+            </tr>
+        </table>
+        <a id="setting_yudo" href="#" onclick="go_setting()">アカウントの設定</a>
+    </div>
 
-						//アラートを表示
-						window.alert('ログアウトしました。またきてね');
-						//OKでログイン画面へ遷移
-						window.location.href = 'login.html'
-					})
-                       //エラー時の処理
-					.catch((error) => {
-						console.log(`ログアウト時にエラーが発生しました (${error})`);
-					});
-			});
-		});
-		/**
-		 * メッセージ表示
-		 **/
-		function showMessage(title, msg) {
-			document.querySelector('h2').innerText = title;
-			document.querySelector('#info').innerHTML = msg;
-		}
+    <!--ここからJavaScript-->
 
-	</script>
+    <!--authログインチェック-->
+    <script>
+        firebase.auth().onAuthStateChanged((user) => {
+            let logout = document.getElementById("logout");
+            //-----------------------------------
+            // ログインチェック
+            //-----------------------------------
+            if (!user) {
+                showMessage('Not Login', 'ログインしていません');
+                logout.classList.add("hide");
+                window.location.href = 'login.html';
+                return (false);
+            }
+            //-----------------------------------
+            // ログイン者への処理
+            //-----------------------------------
+            // ログインメッセージ
 
-	<!--FireStoreからルーム情報を取得-->
-	<script>
-		function displayRoom() {
-			console.log("displayRoom()");
-			//ルーム情報を表示
-			var docRef = db.collection("chatroom");
-			docRef.get().then((query) => {
-				query.forEach((doc) => {});
-				var messagesRef = db.collection("chatroom");
-				//room1~10まで表示（for文で回せずそれぞれ記載）
-				messagesRef.doc("room1").get().then(function(doc) {
-					if (doc.exists) {
-						//					console.log("Document data:", doc.data());
-						var room = "room1";
-						var count = "count1";
-						addlog(doc.data(), room, count);
-					} else {
-						console.log("room1のフィールドが見つかりません");
-					}
-				}).catch(function(error) {
-					console.log("Error getting document:", error);
-				});
-				messagesRef.doc("room2").get().then(function(doc) {
-					if (doc.exists) {
-						//					console.log("Document data:", doc.data());
-						var room = "room2";
-						var count = "count2";
-						addlog(doc.data(), room, count);
-					} else {
-						console.log("room2のフィールドが見つかりません");
-					}
-				}).catch(function(error) {
-					console.log("Error getting document:", error);
-				});
-				messagesRef.doc("room3").get().then(function(doc) {
-					if (doc.exists) {
-						//					console.log("Document data:", doc.data());
-						var room = "room3";
-						var count = "count3";
-						addlog(doc.data(), room, count);
-					} else {
-						console.log("room3のフィールドが見つかりません");
-					}
-				}).catch(function(error) {
-					console.log("Error getting document:", error);
-				});
-				messagesRef.doc("room4").get().then(function(doc) {
-					if (doc.exists) {
-						//					console.log("Document data:", doc.data());
-						var room = "room4";
-						var count = "count4";
-						addlog(doc.data(), room, count);
-					} else {
-						console.log("room4のフィールドが見つかりません");
-					}
-				}).catch(function(error) {
-					console.log("Error getting document:", error);
-				});
-				messagesRef.doc("room5").get().then(function(doc) {
-					if (doc.exists) {
-						//					console.log("Document data:", doc.data());
-						var room = "room5";
-						var count = "count5";
-						addlog(doc.data(), room, count);
-					} else {
-						console.log("room5のフィールドが見つかりません");
-					}
-				}).catch(function(error) {
-					console.log("Error getting document:", error);
-				});
-				messagesRef.doc("room6").get().then(function(doc) {
-					if (doc.exists) {
-						//					console.log("Document data:", doc.data());
-						var room = "room6";
-						var count = "count6";
-						addlog(doc.data(), room, count);
-					} else {
-						console.log("room6のフィールドが見つかりません");
-					}
-				}).catch(function(error) {
-					console.log("Error getting document:", error);
-				});
-				messagesRef.doc("room7").get().then(function(doc) {
-					if (doc.exists) {
-						//					console.log("Document data:", doc.data());
-						var room = "room7";
-						var count = "count7";
-						addlog(doc.data(), room, count);
-					} else {
-						console.log("room7のフィールドが見つかりません");
-					}
-				}).catch(function(error) {
-					console.log("Error getting document:", error);
-				});
-				messagesRef.doc("room8").get().then(function(doc) {
-					if (doc.exists) {
-						//					console.log("Document data:", doc.data());
-						var room = "room8";
-						var count = "count8";
-						addlog(doc.data(), room, count);
-					} else {
-						console.log("room8のフィールドが見つかりません");
-					}
-				}).catch(function(error) {
-					console.log("Error getting document:", error);
-				});
-				messagesRef.doc("room9").get().then(function(doc) {
-					if (doc.exists) {
-						//					console.log("Document data:", doc.data());
-						var room = "room9";
-						var count = "count9";
-						addlog(doc.data(), room, count);
-					} else {
-						console.log("room9のフィールドが見つかりません");
-					}
-				}).catch(function(error) {
-					console.log("Error getting document:", error);
-				});
-				messagesRef.doc("room10").get().then(function(doc) {
-					if (doc.exists) {
-						//					console.log("Document data:", doc.data());
-						var room = "room10";
-						var count = "count10";
-						addlog(doc.data(), room, count);
-					} else {
-						console.log("room10のフィールドが見つかりません");
-					}
-				}).catch(function(error) {
-					console.log("Error getting document:", error);
-				});
-			}).catch((error) => {
-				console.log(`データの取得に失敗しました (${error})`);
-			});
-		}
+            var nameurl = `<a href='acount_info.html?uid=${user.uid}'>${user.displayName}</a>`;
 
-		//ルーム情報を表示
-		function addlog(data, room, count) {
-			var str = data.theme;
-			//			console.log(typeof str);
-			var cnt = Object.entries(data.users);
-			//			console.log(cnt.length);
-			document.querySelector(`#${room}`).innerText = str; //お題
-			document.querySelector(`#${count}`).innerText = String(cnt.length); //参加人数
-		}
+            showMessage('ようこそ！', `ログイン中 : ${nameurl}さん`);
+            console.log(user);
 
-	</script>
-	<script>
-		//参加ボタンでトークに参加
-		//参加人数を集計しdiscussion_goに渡す	snapshotにラグがあるためこの関数を追加
-		function discussion(id, userid) {
-			var c = 0;
-			var a_user
-			const docRef = db.collection("chatroom").doc("room" + id);
-			docRef.get().then(function(doc) {
-				if (doc.exists) {
-					console.log("Document data:", doc.data());
-					a_user = Object.entries(doc.data().users);
-					c = Object.entries(doc.data().users).length;
-					console.log(c);
-					discussion_go(id, userid, c, a_user);
-				} else {
-					console.log("No such document!");
-				}
-			}).catch(function(error) {
-				console.log("Error getting document:", error);
-			});
-		}
+            userid = user.uid;
+            console.log(userid);
 
-		//人数に空きがある場合又はすでに参加している場合、参加可能になる
-		function discussion_go(id, userid, counter, a_user) {
-			var a = 1;
-			var user0 = "",
-				user1 = "",
-				user2 = "",
-				user3 = "",
-				user4 = "";
-			//user0~4に参加者のuseridを入れる
-			for (var i = 0; i < counter; i++) {
-				switch (i) {
-					case 0:
-						user0 = a_user[i][1];
-						break;
-					case 1:
-						user1 = a_user[i][1];
-						break;
-					case 2:
-						user2 = a_user[i][1];
-						break;
-					case 3:
-						user3 = a_user[i][1];
-						break;
-					case 4:
-						user4 = a_user[i][1];
-						break;
-				}
-			}
-            
-			if (counter < 5 || user0 == userid || user1 == userid || user2 == userid || user3 == userid || user4 == userid) { 
-				//人数に空きがある場合又はすでに参加している場合
+            // ログアウトボタンを表示
+            logout.classList.remove("hide");
+
+            // ログアウトボタンを押下
+            logout.addEventListener("click", () => {
+                firebase.auth().signOut().then(() => {
+                        console.log("ログアウトしました");
+
+                        //アラートを表示
+                        window.alert('ログアウトしました。またきてね');
+                        //OKでログイン画面へ遷移
+                        window.location.href = 'login.html'
+                    })
+                    //エラー時の処理
+                    .catch((error) => {
+                        console.log(`ログアウト時にエラーが発生しました (${error})`);
+                    });
+            });
+        });
+        /**
+         * メッセージ表示
+         **/
+        function showMessage(title, msg) {
+            document.querySelector('h2').innerText = title;
+            document.querySelector('#info').innerHTML = msg;
+        }
+
+    </script>
+
+    <!--FireStoreからルーム情報を取得-->
+    <script>
+        function displayRoom() {
+            console.log("displayRoom()");
+            //ルーム情報を表示
+            var docRef = db.collection("chatroom");
+            docRef.get().then((query) => {
+                query.forEach((doc) => {});
+                var messagesRef = db.collection("chatroom");
+                //room1~10まで表示（for文で回せずそれぞれ記載）
+                messagesRef.doc("room1").get().then(function(doc) {
+                    if (doc.exists) {
+                        //					console.log("Document data:", doc.data());
+                        var room = "room1";
+                        var count = "count1";
+                        addlog(doc.data(), room, count);
+                    } else {
+                        console.log("room1のフィールドが見つかりません");
+                    }
+                }).catch(function(error) {
+                    console.log("Error getting document:", error);
+                });
+                messagesRef.doc("room2").get().then(function(doc) {
+                    if (doc.exists) {
+                        //					console.log("Document data:", doc.data());
+                        var room = "room2";
+                        var count = "count2";
+                        addlog(doc.data(), room, count);
+                    } else {
+                        console.log("room2のフィールドが見つかりません");
+                    }
+                }).catch(function(error) {
+                    console.log("Error getting document:", error);
+                });
+                messagesRef.doc("room3").get().then(function(doc) {
+                    if (doc.exists) {
+                        //					console.log("Document data:", doc.data());
+                        var room = "room3";
+                        var count = "count3";
+                        addlog(doc.data(), room, count);
+                    } else {
+                        console.log("room3のフィールドが見つかりません");
+                    }
+                }).catch(function(error) {
+                    console.log("Error getting document:", error);
+                });
+                messagesRef.doc("room4").get().then(function(doc) {
+                    if (doc.exists) {
+                        //					console.log("Document data:", doc.data());
+                        var room = "room4";
+                        var count = "count4";
+                        addlog(doc.data(), room, count);
+                    } else {
+                        console.log("room4のフィールドが見つかりません");
+                    }
+                }).catch(function(error) {
+                    console.log("Error getting document:", error);
+                });
+                messagesRef.doc("room5").get().then(function(doc) {
+                    if (doc.exists) {
+                        //					console.log("Document data:", doc.data());
+                        var room = "room5";
+                        var count = "count5";
+                        addlog(doc.data(), room, count);
+                    } else {
+                        console.log("room5のフィールドが見つかりません");
+                    }
+                }).catch(function(error) {
+                    console.log("Error getting document:", error);
+                });
+                messagesRef.doc("room6").get().then(function(doc) {
+                    if (doc.exists) {
+                        //					console.log("Document data:", doc.data());
+                        var room = "room6";
+                        var count = "count6";
+                        addlog(doc.data(), room, count);
+                    } else {
+                        console.log("room6のフィールドが見つかりません");
+                    }
+                }).catch(function(error) {
+                    console.log("Error getting document:", error);
+                });
+                messagesRef.doc("room7").get().then(function(doc) {
+                    if (doc.exists) {
+                        //					console.log("Document data:", doc.data());
+                        var room = "room7";
+                        var count = "count7";
+                        addlog(doc.data(), room, count);
+                    } else {
+                        console.log("room7のフィールドが見つかりません");
+                    }
+                }).catch(function(error) {
+                    console.log("Error getting document:", error);
+                });
+                messagesRef.doc("room8").get().then(function(doc) {
+                    if (doc.exists) {
+                        //					console.log("Document data:", doc.data());
+                        var room = "room8";
+                        var count = "count8";
+                        addlog(doc.data(), room, count);
+                    } else {
+                        console.log("room8のフィールドが見つかりません");
+                    }
+                }).catch(function(error) {
+                    console.log("Error getting document:", error);
+                });
+                messagesRef.doc("room9").get().then(function(doc) {
+                    if (doc.exists) {
+                        //					console.log("Document data:", doc.data());
+                        var room = "room9";
+                        var count = "count9";
+                        addlog(doc.data(), room, count);
+                    } else {
+                        console.log("room9のフィールドが見つかりません");
+                    }
+                }).catch(function(error) {
+                    console.log("Error getting document:", error);
+                });
+                messagesRef.doc("room10").get().then(function(doc) {
+                    if (doc.exists) {
+                        //					console.log("Document data:", doc.data());
+                        var room = "room10";
+                        var count = "count10";
+                        addlog(doc.data(), room, count);
+                    } else {
+                        console.log("room10のフィールドが見つかりません");
+                    }
+                }).catch(function(error) {
+                    console.log("Error getting document:", error);
+                });
+            }).catch((error) => {
+                console.log(`データの取得に失敗しました (${error})`);
+            });
+        }
+
+        //ルーム情報を表示
+        function addlog(data, room, count) {
+            var str = data.theme;
+            //			console.log(typeof str);
+            var cnt = Object.entries(data.users);
+            //			console.log(cnt.length);
+            document.querySelector(`#${room}`).innerText = str; //お題
+            document.querySelector(`#${count}`).innerText = String(cnt.length); //参加人数
+        }
+
+    </script>
+    <script>
+        //参加ボタンでトークに参加
+        //参加人数を集計しdiscussion_goに渡す	snapshotにラグがあるためこの関数を追加
+        function discussion(id, userid) {
+            var c = 0;
+            var a_user
+            const docRef = db.collection("chatroom").doc("room" + id);
+            docRef.get().then(function(doc) {
+                if (doc.exists) {
+                    console.log("Document data:", doc.data());
+                    a_user = Object.entries(doc.data().users);
+                    c = Object.entries(doc.data().users).length;
+                    console.log(c);
+                    discussion_go(id, userid, c, a_user);
+                } else {
+                    console.log("No such document!");
+                }
+            }).catch(function(error) {
+                console.log("Error getting document:", error);
+            });
+        }
+
+        //人数に空きがある場合又はすでに参加している場合、参加可能になる
+        function discussion_go(id, userid, counter, a_user) {
+            var a = 1;
+            var user0 = "",
+                user1 = "",
+                user2 = "",
+                user3 = "",
+                user4 = "";
+            //user0~4に参加者のuseridを入れる
+            for (var i = 0; i < counter; i++) {
+                switch (i) {
+                    case 0:
+                        user0 = a_user[i][1];
+                        break;
+                    case 1:
+                        user1 = a_user[i][1];
+                        break;
+                    case 2:
+                        user2 = a_user[i][1];
+                        break;
+                    case 3:
+                        user3 = a_user[i][1];
+                        break;
+                    case 4:
+                        user4 = a_user[i][1];
+                        break;
+                }
+            }
+
+            if (counter < 5 || user0 == userid || user1 == userid || user2 == userid || user3 == userid || user4 == userid) {
+                //人数に空きがある場合又はすでに参加している場合
                 ret = confirm("ルーム" + id + "に移動します");
-				if (ret == true) {
-					const userRef = db.collection("chatroom").doc("room" + id).collection("users").doc(userid);
-					userRef.set({
-						flag: "0"
-					}).then(function() {
-						userAdd(id);
-					}).catch(function(error) {
-						console.error("Error writing document: ", error);
-					});
+                if (ret == true) {
+                    const userRef = db.collection("chatroom").doc("room" + id).collection("users").doc(userid);
+                    userRef.set({
+                        flag: "0"
+                    }).then(function() {
+                        userAdd(id);
+                    }).catch(function(error) {
+                        console.error("Error writing document: ", error);
+                    });
 
-				}
-			} else {
-				ret = confirm("ルームは満員です");
-			}
-		}
+                }
+            } else {
+                ret = confirm("ルームは満員です");
+            }
+        }
 
-		//観戦ボタンでトークを見る
-		function participation(id) {
-			var a = 1;
-			ret = confirm("ルーム" + id + "に移動します");
-			if (ret == true) {
-				location.href = "http://tri-s-web.catfood.jp/touronnomori/discussion.html?&&room" + id + "&&par"; //parパラメータを付与
-			}
-		}
+        //観戦ボタンでトークを見る
+        function participation(id) {
+            var a = 1;
+            ret = confirm("ルーム" + id + "に移動します");
+            if (ret == true) {
+                location.href = "http://tri-s-web.catfood.jp/touronnomori/discussion.html?&&room" + id + "&&par"; //parパラメータを付与
+            }
+        }
         //ユーザーの追加
         function userAdd(id) {
-			//ユーザーIDをFirestoreに追加
-			const docRef = db.collection("chatroom").doc("room" + id);
-			console.log(userid);
-			docRef.update({
-					users: firebase.firestore.FieldValue.arrayUnion(userid)
-				})
-				.then(function() {
-					console.log("Document successfully written!");
-					location.href = "http://tri-s-web.catfood.jp/touronnomori/discussion.html?&&room" + id; //userを追加する前にdiscussionに遷移してしまうのでここに記述
-				})
-				.catch(function(error) {
-					console.error("Error writing document: ", error);
-				});
-		}
+            //ユーザーIDをFirestoreに追加
+            const docRef = db.collection("chatroom").doc("room" + id);
+            console.log(userid);
+            docRef.update({
+                    users: firebase.firestore.FieldValue.arrayUnion(userid)
+                })
+                .then(function() {
+                    console.log("Document successfully written!");
+                    location.href = "http://tri-s-web.catfood.jp/touronnomori/discussion.html?&&room" + id; //userを追加する前にdiscussionに遷移してしまうのでここに記述
+                })
+                .catch(function(error) {
+                    console.error("Error writing document: ", error);
+                });
+        }
 
-        
+
         //設定画面への画面遷移
-		function go_setting(){
-			location.href = "http://tri-s-web.catfood.jp/touronnomori/acount_setting.html?" + userid;
-		}
-	</script>
+        function go_setting() {
+            location.href = "http://tri-s-web.catfood.jp/touronnomori/acount_setting.html?" + userid;
+        }
+
+    </script>
 
 
 </body>
