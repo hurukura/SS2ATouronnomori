@@ -85,7 +85,6 @@
 		<div id="joined_discus"></div>
 	</div>
 
-
 	<script src="js/auth.js"></script>
 
 
@@ -111,7 +110,6 @@
 		var docRef = db.collection("users").doc(uid);
 
 		// データの読み取り
-
 		docRef.get().then((doc) => {
 				if (doc.exists) {
 					console.log(doc.data());
@@ -139,18 +137,17 @@
 					console.log('アカウントが見つからないので3秒後に討論画面へ戻ります。');
 					setTimeout(joined_d.back(), waitTimer * 3000);
 				}
-
+				//historyが見つからない場合
 				if (joined_d == undefined) {
+					console.log("Not find History!")
 					var joind_unde = "過去に参加した討論はありません";
-
 					notjoin(joind_unde);
-				} else {
-					console.log("find joinDiscus!")
+				} else {	//historyが見つかった場合
 
+					console.log("find History!")
 					showJoined_result(joined_d);
 
 				}
-
 			})
 			.catch((error) => {
 				console.log(`データを取得できませんでした (${error})`);
@@ -170,19 +167,20 @@
 
 		}
 
+		//　過去に参加した討論の一覧を表示するファンクション
 		function showJoined_result(roomnum) {
-			var kk = [];
 
+			//historyにある分だけfor文を回す
 			for (i = 0; i < roomnum.length; i++) {
 				var themeRef = db.collection("results").doc(roomnum[i]);
-				// データの読み取り
+				// 取ってきたデータの読み取り
 				themeRef.get().then((doc) => {
 						if (doc.exists) {
 							console.log(doc.data());
+							//お題
 							theme = doc.data()["theme"];
-							
-							kk[i]
 
+							//Aタグ化してfindjoinファンクションへ
 							findjoin(`<a href="./discussion_result.html?joind=${doc.id}" class="room">${doc.id.slice(0,2)}/${doc.id.slice(2,4)}/${doc.id.slice(4,6)}  ${doc.id.substr(6)} ：${theme}</a>`)
 						}
 					})
@@ -191,16 +189,19 @@
 					});
 			}
 
+			//historyがなかった場合のファンクション
 			function notjoin(msg) {
 				document.querySelector('#joined_discus').innerText = msg;
 
 			}
 
+			//historyがあった時、画面に表示させるためのファンクション
 			function findjoin(join) {
 				document.querySelector('#joined_discus').innerHTML += join;
 			}
 		}
 		
+		//アカウント設定へ飛ぶ
 		function go_setting(){
 			location.href = "http://tri-s-web.catfood.jp/touronnomori/acount_setting.html?" + uid;
 		}

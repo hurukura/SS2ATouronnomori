@@ -30,13 +30,13 @@
 	<!--    モジュールここまで   -->
 
 	<div id="login">
-		<div id="info">aaaaa</div>
+		<div id="info">now loading･･･</div>
 		<form>
 			<button type="button" id="logout" class="hide">ログアウト</button>
 		</form>
 	</div>
 
-	<script>
+	<script> //タイトルをクリックしたときの処理（ホーム画面にいく）
 		function gohome() {
 			window.location.href = 'home.html';
 		}
@@ -116,8 +116,9 @@
 					radio_seibetu[i].checked = true;
 				}
 			}
-		}
-
+        }
+        
+        //取得した年代を表示
 		function selectNendai(value) {
 			var form = document.getElementById("set");
 			var radio_seibetu = form.nendai_q;
@@ -148,14 +149,18 @@
 			var a = radioNodeList.value;
 			window.console.log(a);
 
+            //年代を取得
 			var select = form.nendai_q;
 			var b = select.value;
-			window.console.log(b);
-
+            window.console.log(b);
+            
+            //ユーザー名を取得
 			var userName = getUserName();
 			var userid = getUserId();
 			console.log(userid);
 
+
+            //確認
 			if (a != "" && b != "") {
 				var result = window.confirm(`${userName}さん、この内容でよろしいですか？`);
 			} else if (b != "") {
@@ -169,7 +174,7 @@
 			//アラートが「はい」のときの処理
 			if (result) {
 				db.collection("users").doc(userid).update({
-						//　ここにDBへの書き込みコード
+                    //firestoreへ書き込み
 						username: u_name,
 						seibetu: a,
 						nendai: b,
@@ -184,8 +189,10 @@
 						console.error("Error writing document: ", error);
 					});
 
-				var user = firebase.auth().currentUser;
-
+                //現在ログイン中のユーザーを取得
+                var user = firebase.auth().currentUser;
+                
+                //Authのユーザー名をユーザーが設定した新しいユーザー名へ変える処理
 				user.updateProfile({
 					displayName: u_name
 				}).then(function() {
